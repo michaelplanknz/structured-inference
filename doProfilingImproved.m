@@ -7,7 +7,9 @@ addpath('functions');
 % Folder for saving plots
 savFolder = "figures/";
 
-options = optimoptions('fmincon', 'Display', 'off');
+optTol = 1e-10;          % default is 1e-6
+
+options = optimoptions('fmincon', 'Display', 'off');%, 'OptimalityTolerance', optTol);
 
 
 
@@ -15,7 +17,7 @@ options = optimoptions('fmincon', 'Display', 'off');
 par = getPar();
 sol = solveModel(par);
 obs = genObs(sol, par);
-ThetaTrue = [par.R0; par.tR; par.pObs; par.obsSD];
+ThetaTrue = [par.R0; par.tR; par.obsSD];
 
 
 
@@ -24,26 +26,25 @@ ThetaTrue = [par.R0; par.tR; par.pObs; par.obsSD];
 tic
 
 % Initial guess for fitted parameters [R0, tR, pObs, obsSD]
-parLbl = ["R0", "tR", "pObs", "obsSD"];
-Theta0 = [1.5; 400; 0.1; 0.4];
+parLbl = ["R0", "tR", "obsSD"];
+Theta0 = [1.5; 400; 0.4];
 
 % Define lower and upper bounds on fitted parameters
-lb = [0; 0; 0; 0];
-ub = [20; 2000; 1; 2];
+lb = [0; 0; 0];
+ub = [20; 2000; 2];
 
 % Deine objective function for optimisation
-objFn = @(Theta)(-calcLogLik(obs, Theta, par));
+objFn = @(Theta)(-calcLogLikImproved(obs, Theta, par));
 
 % Local search starting from Theta0...
-[ThetaMLE, ~, exitFlag, output] = fmincon( objFn, Theta0, [], [], [], [], lb, ub, [], options);
+[ThetaMLE, ~, exitFlag, output] = fmincon( objFn, Theta0, [], [], [], [], lb, ub, [], options );
 countMLE = output.funcCount;
 
-% ...or global search
-% problem = createOptimProblem('fmincon','x0', Theta0, 'objective', objFn, 'lb', lb, 'ub', ub);
-% ThetaMLE = run(GlobalSearch, problem);
+% Post-calculate optimal pObs
+[~, pObsMLE] = calcLogLikImproved(obs, ThetaMLE, par);
 
 % Solve model at MLE estimate and plot results
-parMLE = getTrialPar(ThetaMLE, par);
+parMLE = getTrialPar([ThetaMLE(1:2); pObsMLE; ThetaMLE(3)], par);
 solMLE = solveModel(parMLE);
 
 h = figure(1);
@@ -61,9 +62,8 @@ legend('actual', 'MLE', 'data')
 xlabel('time (days)')
 ylabel('new daily observations')
 ylim([0 inf])
-saveas(gcf, savFolder+"mle", 'png');
+saveas(gcf, savFolder+"mleImproved", 'png');
 drawnow
-
 
 
 
@@ -75,8 +75,8 @@ drawnow
 nMesh = 21;     % number of points in parameter mesh
 
 % Profile intervals for each parameter
-ThetaLower = [1.2; 250; 0.005; 0.15];
-ThetaUpper = [1.4; 350; 0.015; 0.4];
+ThetaLower = [1.2; 250; 0.15];
+ThetaUpper = [1.4; 350; 0.4];
 
 nPars = length(Theta0);
 countProfile = zeros(nPars, 1);
@@ -89,7 +89,7 @@ parfor iPar = 1:nPars
     iStart = find(ThetaMesh >= ThetaMLE(iPar), 1, 'first');        % start profiling from the MLE rightwards
     ThetaOther0 = ThetaMLE(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart:nMesh
-        objFn = @(ThetaOther)(-calcLogLik(obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
+        objFn = @(ThetaOther)(-calcLogLikImproved(obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
         [x, f, exitFlag, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb(jOther), ub(jOther), [], options);
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run
@@ -99,7 +99,7 @@ parfor iPar = 1:nPars
     % now profile from the MLE leftwards
     ThetaOther0 = ThetaMLE(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart-1:-1:1
-        objFn = @(ThetaOther)(-calcLogLik(obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
+        objFn = @(ThetaOther)(-calcLogLikImproved(obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
         [x, f, exitFlag, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb(jOther), ub(jOther), [], options);
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run
@@ -126,6 +126,6 @@ for iPar = 1:nPars
     drawnow
 end
 
-saveas(gcf, savFolder+"profiles", 'png');
+saveas(gcf, savFolder+"profilesImproved", 'png');
 
 
