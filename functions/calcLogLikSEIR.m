@@ -1,4 +1,4 @@
-function LL = calcLogLik(obs, Theta, par)
+function LL = calcLogLikSEIR(obs, Theta, par)
 
 % Calculate log likelihood of observed data obs under parameters Theta
 % par is the structrue containing all model parameters
@@ -9,10 +9,10 @@ small = 1e-10;
 nPoints = length(obs);
 
 % Construct a modified parameter structure by overwriting the default settings with the specified values of Theta
-par = getTrialPar(Theta, par);
+par = getTrialParSEIR(Theta, par);
 
 % Solve forward model
-sol = solveModel(par); 
+sol = solveModelSEIR(par); 
 
 % Expected observed values
 Yt = 1/par.tObs * sol.C1;       

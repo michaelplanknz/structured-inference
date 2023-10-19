@@ -1,4 +1,4 @@
-function obs = genObs(sol, par)
+function obs = genObsSEIR(sol, par)
 
 Yt = 1/par.tObs * sol.C1;
 nObs = length(Yt);

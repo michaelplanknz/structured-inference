@@ -1,4 +1,4 @@
-function trialPar = getTrialParImproved(Theta, par)
+function trialPar = getTrialParImprovedSEIR(Theta, par)
 
 % Construct a modified (trial) parameter structure trialPar by overwriting the default settings in par with the specified values of Theta
 

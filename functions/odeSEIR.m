@@ -1,12 +1,12 @@
-function dydt = odeRHS(t, y, par)
+function dydt = odeSEIR(t, y, par)
 
 S = y(1);                       % susceptible
 E = y(2);                       % exposed
 I = y(3);                       % infectious
 R1 = y(4);                      % recovered (part I)
 R2 = par.popSize - sum(y(1:4)); % recovered (part II)
-C1 = y(5);                      % observed (latent)
-C2 = y(6);                      % observed (cumulative)
+C1 = y(5);                      % cases (latent)
+C2 = y(6);                      % cases (cumulative)
 
 % Force of infection proportional to number infectious plus seeding term
 FOI = par.R0 * (I/par.tI + par.seedSize * normpdf(t, par.tSeed, par.seedDur)) /par.popSize ;

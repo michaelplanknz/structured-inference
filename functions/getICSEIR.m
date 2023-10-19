@@ -1,4 +1,4 @@
-function IC = getIC(par);
+function IC = getICSEIR(par);
 
 % Return vector of intial conditions
 

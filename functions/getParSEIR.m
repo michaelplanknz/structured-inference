@@ -1,4 +1,4 @@
-function par = getPar();
+function par = getParSEIR();
 
 % Simulation parameters
 par.popSize = 5e6;      % population size

@@ -7,16 +7,17 @@ addpath('functions');
 % Folder for saving plots
 savFolder = "figures/";
 
-optTol = 1e-10;          % default is 1e-6
-
-options = optimoptions('fmincon', 'Display', 'off');%, 'OptimalityTolerance', optTol);
+options = optimoptions('fmincon', 'Display', 'off');
 
 
 
 % Generate data from forward model
 par = getPar();
-sol = solveModel(par);
+sol = solveModelSEIR(par);
 obs = genObs(sol, par);
+
+
+
 ThetaTrue = [par.R0; par.tR; par.obsSD];
 
 
@@ -34,18 +35,18 @@ lb = [0; 0; 0];
 ub = [20; 2000; 2];
 
 % Deine objective function for optimisation
-objFn = @(Theta)(-calcLogLikImproved(obs, Theta, par));
+objFn = @(Theta)(-calcLogLikImprovedSEIR(obs, Theta, par));
 
 % Local search starting from Theta0...
 [ThetaMLE, ~, exitFlag, output] = fmincon( objFn, Theta0, [], [], [], [], lb, ub, [], options );
 countMLE = output.funcCount;
 
 % Post-calculate optimal pObs
-[~, pObsMLE] = calcLogLikImproved(obs, ThetaMLE, par);
+[~, pObsMLE] = calcLogLikImprovedSEIR(obs, ThetaMLE, par);
 
 % Solve model at MLE estimate and plot results
 parMLE = getTrialPar([ThetaMLE(1:2); pObsMLE; ThetaMLE(3)], par);
-solMLE = solveModel(parMLE);
+solMLE = solveModelSEIR(parMLE);
 
 h = figure(1);
 h.Position =   [ 560   591   974   357];
@@ -74,7 +75,7 @@ drawnow
 
 nMesh = 21;     % number of points in parameter mesh
 
-% Profile intervals for each parameter
+% Profile intervals for each parameter across a specified range 
 ThetaLower = [1.2; 250; 0.15];
 ThetaUpper = [1.4; 350; 0.4];
 
@@ -89,7 +90,7 @@ parfor iPar = 1:nPars
     iStart = find(ThetaMesh >= ThetaMLE(iPar), 1, 'first');        % start profiling from the MLE rightwards
     ThetaOther0 = ThetaMLE(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart:nMesh
-        objFn = @(ThetaOther)(-calcLogLikImproved(obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
+        objFn = @(ThetaOther)(-calcLogLikImprovedSEIR(obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
         [x, f, exitFlag, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb(jOther), ub(jOther), [], options);
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run
@@ -99,7 +100,7 @@ parfor iPar = 1:nPars
     % now profile from the MLE leftwards
     ThetaOther0 = ThetaMLE(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart-1:-1:1
-        objFn = @(ThetaOther)(-calcLogLikImproved(obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
+        objFn = @(ThetaOther)(-calcLogLikImprovedSEIR(obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
         [x, f, exitFlag, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb(jOther), ub(jOther), [], options);
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run
