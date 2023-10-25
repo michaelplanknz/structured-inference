@@ -17,7 +17,7 @@ countMLEImproved = output.funcCount;
 [~, PhiMLE] = calcLogLikImproved(getTrialParImproved, solveModel, transformSolution, obs, ThetaMLE_contracted, par, Theta0(parsToOptimise), lb(parsToOptimise), ub(parsToOptimise), options);
 
 % Combine the output from fmincon with the value of the parameter(s) optimised "within the loop" into a single vector of consistent format with ThetaMLE
-ThetaMLEImproved = makeTheta(PhiMLE, ThetaMLE_contracted, parsToOptimise )
+ThetaMLEImproved = makeTheta(PhiMLE, ThetaMLE_contracted, parsToOptimise );
 
 % Solve model at MLE estimate and plot results
 parMLEImproved = getTrialPar(ThetaMLEImproved, par);
