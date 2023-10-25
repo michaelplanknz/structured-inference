@@ -1,4 +1,4 @@
-function [logLik, countProfile] = doProfilingImproved(getTrialParImproved, solveModel, obs, par, ThetaMLEImproved, Theta0, lb, ub, ThetaLower, ThetaUpper, parsToOptimise, nMesh, options)
+function [logLik, countProfile] = doProfilingImproved(getTrialParImproved, solveModel, transformSolution, obs, par, ThetaMLEImproved, Theta0, lb, ub, ThetaLower, ThetaUpper, parsToOptimise, nMesh, options)
 
 
 % Indices of remianing parameters in parLbl to profile
@@ -19,7 +19,7 @@ ThetaMLEImproved_contracted = ThetaMLEImproved(parsToProfile);
 nPars = length(Theta0_contracted);
 countProfile = zeros(nPars, 1);
 logLik = zeros(nPars, nMesh);
-for iPar = 1:nPars
+parfor iPar = 1:nPars
     ThetaMesh = linspace(ThetaLower_contracted(iPar), ThetaUpper_contracted(iPar), nMesh);
     jOther = setdiff(1:nPars, iPar);
 
@@ -27,7 +27,7 @@ for iPar = 1:nPars
     iStart = find(ThetaMesh >= ThetaMLEImproved_contracted(iPar), 1, 'first');        % start profiling from the MLE rightwards
     ThetaOther0 = ThetaMLEImproved_contracted(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart:nMesh
-        objFn = @(ThetaOther)(-calcLogLikImproved(getTrialParImproved, solveModel, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par, Theta0(parsToOptimise), lb(parsToOptimise), ub(parsToOptimise), options));
+        objFn = @(ThetaOther)(-calcLogLikImproved(getTrialParImproved, solveModel, transformSolution, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par, Theta0(parsToOptimise), lb(parsToOptimise), ub(parsToOptimise), options));
         [x, f, ~, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb_contracted(jOther), ub_contracted(jOther), [], options);
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run
@@ -37,7 +37,7 @@ for iPar = 1:nPars
     % now profile from the MLE leftwards
     ThetaOther0 = ThetaMLEImproved_contracted(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart-1:-1:1
-        objFn = @(ThetaOther)(-calcLogLikImproved(getTrialParImproved, solveModel, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par, Theta0(parsToOptimise), lb(parsToOptimise), ub(parsToOptimise), options));
+        objFn = @(ThetaOther)(-calcLogLikImproved(getTrialParImproved, solveModel, transformSolution, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par, Theta0(parsToOptimise), lb(parsToOptimise), ub(parsToOptimise), options));
         [x, f, ~, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb_contracted(jOther), ub_contracted(jOther), [], options);
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run

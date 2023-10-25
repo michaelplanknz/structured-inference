@@ -25,6 +25,7 @@ getPar = @getParSEIR;
 getTrialPar = @getTrialParSEIR;
 getTrialParImproved = @getTrialParImprovedSEIR;
 solveModel = @solveModelSEIR;
+transformSolution = @transformSolutionSEIR;
 savLbl = "SEIR";
 
 % Initial guess for fitted parameters [R0, tR, pObs, obsSD]
@@ -126,8 +127,8 @@ saveas(gcf, savFolder+"profiles_"+savLbl, 'png');
 parsToOptimise = 3;
 
 
-% Call MLE function
-[ThetaMLEImproved, parMLEImproved, solMLEImproved, countMLEImproved] = doMLEImproved(getTrialPar, getTrialParImproved, solveModel, obs, par, Theta0, lb, ub, parsToOptimise, options);
+% Call improved MLE function
+[ThetaMLEImproved, parMLEImproved, solMLEImproved, countMLEImproved] = doMLEImproved(getTrialPar, getTrialParImproved, solveModel, transformSolution, obs, par, Theta0, lb, ub, parsToOptimise, options);
 
 
 
@@ -136,7 +137,7 @@ parsToOptimise = 3;
 % Profiling with structured inference method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[logLikImproved, countProfileImproved] = doProfilingImproved(getTrialParImproved, solveModel, obs, par, ThetaMLEImproved, Theta0, lb, ub, ThetaLower, ThetaUpper, parsToOptimise, nMesh, options);
+[logLikImproved, countProfileImproved] = doProfilingImproved(getTrialParImproved, solveModel, transformSolution, obs, par, ThetaMLEImproved, Theta0, lb, ub, ThetaLower, ThetaUpper, parsToOptimise, nMesh, options);
 
 
 
