@@ -47,8 +47,8 @@ ThetaUpper = [1.4; 350; 0.015; 0.4];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 par = getPar();
-[sol, Yt] = solveModel(par);
-obs = genObs(Yt, par);
+sol = solveModel(par);
+obs = genObs(sol.eObs, par);
 
 % Make a vector of target parameters for inference
 ThetaTrue = [par.R0; par.tR; par.pObs; par.obsSD];
@@ -84,7 +84,7 @@ ThetaTrue = [par.R0; par.tR; par.pObs; par.obsSD];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 h = figure(1);
-plot(sol.t, (1/par.tObs)*sol.C1, solMLE.t, (1/parMLE.tObs)*solMLE.C1 , sol.t, obs, '.' )
+plot(sol.t, sol.eObs, solMLE.t, solMLE.eObs , sol.t, obs, '.' )
 legend('actual', 'MLE', 'data')
 xlabel('time (days)')
 ylabel('new daily observations')
@@ -116,27 +116,18 @@ saveas(gcf, savFolder+"profiles_"+savLbl, 'png');
 
 
 
-
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Find MLE with structured inference method
+% NB variables with 'Improved" suffix relate to output from the structured inference method as opposed to the basic method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Indices  of parameters in parLbl to optimise without re-evaluating forward model
 parsToOptimise = 3;
-% Indices of remianing parameters in parLbl to profile
-parsToProfile = setdiff(1:length(parLbl), parsToOptimise);
-
-% Create contracted vectors containing only the information for the parameters to be profiled
-lb_contracted = lb(parsToProfile);
-ub_contracted = ub(parsToProfile);
-ThetaTrue_contracted = ThetaTrue(parsToProfile);
-parLbl_contracted = parLbl(parsToProfile);
-Theta0_contracted = Theta0(parsToProfile);
-ThetaLower_contracted = ThetaLower(parsToProfile);
-ThetaUpper_contracted = ThetaUpper(parsToProfile);
 
 
-[ThetaMLEImproved, parMLEImproved, solMLEImproved, countMLEImproved] = doMLEImproved(getTrialPar, getTrialParImproved, solveModel, obs, par, Theta0_contracted, lb_contracted, ub_contracted, parsToOptimise, options);
+% Call MLE function
+[ThetaMLEImproved, parMLEImproved, solMLEImproved, countMLEImproved] = doMLEImproved(getTrialPar, getTrialParImproved, solveModel, obs, par, Theta0, lb, ub, parsToOptimise, options);
 
 
 
@@ -145,7 +136,7 @@ ThetaUpper_contracted = ThetaUpper(parsToProfile);
 % Profiling with structured inference method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[logLikImproved, countProfileImproved] = doProfilingImproved(getTrialParImproved, solveModel, obs, par, ThetaMLEImproved, Theta0_contracted, lb_contracted, ub_contracted, ThetaLower_contracted, ThetaUpper_contracted, nMesh, options);
+[logLikImproved, countProfileImproved] = doProfilingImproved(getTrialParImproved, solveModel, obs, par, ThetaMLEImproved, Theta0, lb, ub, ThetaLower, ThetaUpper, parsToOptimise, nMesh, options);
 
 
 
@@ -155,7 +146,7 @@ ThetaUpper_contracted = ThetaUpper(parsToProfile);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 h = figure(3);
-plot(sol.t, (1/par.tObs)*sol.C1, solMLEImproved.t, (1/parMLEImproved.tObs)*solMLEImproved.C1 , sol.t, obs, '.' )
+plot(sol.t, sol.eObs, solMLEImproved.t, solMLEImproved.eObs, sol.t, obs, '.' )
 legend('actual', 'MLE', 'data')
 xlabel('time (days)')
 ylabel('new daily observations')
@@ -167,15 +158,16 @@ saveas(gcf, savFolder+"mle_structured_"+savLbl, 'png');
 
 h = figure(4);
 h.Position = [   560         239        1012         709];
-nPars = length(Theta0_contracted);      % number of parameters to profile
+parsToProfile = setdiff(1:length(Theta0), parsToOptimise);
+nPars = length(parsToProfile);      % number of parameters to profile
 for iPar = 1:nPars
-    ThetaMesh = linspace(ThetaLower_contracted(iPar), ThetaUpper_contracted(iPar), nMesh);
+    ThetaMesh = linspace(ThetaLower(parsToProfile(iPar)), ThetaUpper(parsToProfile(iPar)), nMesh);
     subplot(2, 2, iPar)
     plot(ThetaMesh, logLikImproved(iPar, :))
-    xline(ThetaMLEImproved(iPar), 'r--');
-    xline(ThetaTrue_contracted(iPar), 'k--');
+    xline(ThetaMLEImproved(parsToProfile(iPar)), 'r--');
+    xline(ThetaTrue(parsToProfile(iPar)), 'k--');
     legend('profile likelihood', 'MLE', 'actual')
-    xlabel(parLbl_contracted(iPar))
+    xlabel(parLbl(parsToProfile(iPar)))
     ylabel('log likelihood')
     title(sprintf('Profile %i evaluations', countProfileImproved(iPar)))
     drawnow

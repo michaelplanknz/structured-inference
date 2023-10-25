@@ -9,7 +9,7 @@ function LL = calcLogLik(getTrialPar, solveModel, obs, Theta, par)
 par = getTrialPar(Theta, par);
 
 % Solve forward model
-[~, Yt] = solveModel(par); 
+sol = solveModel(par); 
 
-LL = LLfunc(Yt, obs, par.obsSD, par.noiseModel);
+LL = LLfunc(sol.eObs, obs, par.obsSD, par.noiseModel);
 

@@ -1,4 +1,4 @@
-function [sol, Yt] = solveModelSEIR(par)
+function sol = solveModelSEIR(par)
 
 
 tSpan = 0:1:par.tMax;
@@ -26,5 +26,5 @@ sol.C1 = Y(:, 5);                             % cases (latent)
 sol.C2 = Y(:, 6);                             % cases (cumulative)
 
 % Calculate mean (expected) observations
-Yt = 1/par.tObs * sol.C1;
+sol.eObs = 1/par.tObs * sol.C1;
 

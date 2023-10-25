@@ -1,8 +1,9 @@
-function [LL, pObsOpt] = calcLogLikImproved(getTrialParImproved, solveModel, obs, Theta, par, options)
+function [LL, PhiOpt] = calcLogLikImproved(getTrialParImproved, solveModel, obs, Theta, par, Phi0, lb, ub, options)
 
 % Calculate log likelihood of observed data obs under parameters Theta
 % par is the structrue containing all model parameters
 % Theta is the vector of selected parameters to be fitted 
+% Phi0, lb, and ub are the initial condition and lower and upper bound for the parameter(s) to be optimised (e.g. pOObs)
 
 
 nPoints = length(obs);
@@ -11,14 +12,13 @@ nPoints = length(obs);
 par = getTrialParImproved(Theta, par);
 
 % Solve forward model (with pObs = 1 or equivalent modification made by getTrialParImproved)
-[~, Yt] = solveModel(par); 
+sol = solveModel(par); 
 
-% Find optimal pObs and associated log likelihood, starting from initial guess pObs = 0.5
+% Find optimal Phi (representing e.g. pObs) and associated log likelihood, starting from initial guess pObs = 0.5
 % Note this optimisation stop does not require the forward model to be re-run, it just evaluates the likelihood at scaled_yMean = pObs*yMean
-objFn = @(pObs)(-LLfunc(pObs*Yt, obs, par.obsSD, par.noiseModel));
-[pObsOpt, f, exitFlag] = fmincon(objFn, 0.05, [], [], [], [], 0, 1, [], options);            % 0.5 is the initial condition for the optimisd parameter; [0, 1] arguments require the optimised parameter to be bounded by [0, 1] 
+objFn = @(Phi)(-LLfunc(Phi*sol.eObs, obs, par.obsSD, par.noiseModel));
+[PhiOpt, f, exitFlag] = fmincon(objFn, Phi0, [], [], [], [], lb, ub, [], options);           
 assert(exitFlag > 0)
-%pObsOpt
 
 
 LL = -f;
