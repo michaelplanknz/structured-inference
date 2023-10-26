@@ -6,8 +6,6 @@ function [LL, PhiOpt] = calcLogLikImproved(getTrialParImproved, solveModel, tran
 % Phi0, lb, and ub are the initial condition and lower and upper bound for the parameter(s) to be optimised (e.g. pOObs)
 
 
-nPoints = length(obs);
-
 % Construct a modified parameter structure by overwriting the default settings with the specified values of Theta
 par = getTrialParImproved(Theta, par);
 
