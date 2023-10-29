@@ -5,7 +5,7 @@ function trialPar = getTrialParImprovedLV(Theta, par)
 trialPar = par;
 trialPar.r  = Theta(1);
 trialPar.a = Theta(2);
-trialPar.obsSD = Theta(3);
+%trialPar.obsSD = Theta(3);
 
 % Set pObs = 1 for all forward model runs under improved profiling method
 trialPar.pObs = 1;

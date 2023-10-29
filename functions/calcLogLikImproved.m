@@ -16,6 +16,7 @@ sol = solveModel(par);
 % Note this optimisation stop does not require the forward model to be re-run, it just evaluates the likelihood at scaled_yMean = pObs*yMean
 objFn = @(Phi)(-LLfunc( transformSolution(Phi, sol), obs, par.obsSD, par.noiseModel));
 [PhiOpt, f, exitFlag] = fmincon(objFn, Phi0, [], [], [], [], lb, ub, [], options);           
+
 assert(exitFlag > 0)
 
 % f is negative log likelihood so return -f

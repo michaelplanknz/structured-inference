@@ -66,19 +66,19 @@ for iModel = 1:nModels
         transformSolution = @transformSolutionMultiply;
         
         % Initial guess for fitted parameters [a, b, pObs, obsSD]
-        parLbl = ["r", "a", "pObs", "obsSD"];
-        Theta0 = [0.95; 1.45; 0.11; 0.004];
+        parLbl = ["r", "a", "pObs"];%, "obsSD"];
+        Theta0 = [0.95; 1.45; 0.11];%; 4];
         
         xLbl = 'time';
         yLbl = 'observed population count';
         
         % Define lower and upper bounds on fitted parameters
-        lb = [0; 0; 0; 0];
-        ub = [10; 10; 1; 0.02];
+        lb = [0; 0; 0];%; 0];
+        ub = [10; 10; 1];%; 20];
         
         % Profile intervals for each parameter
-        ThetaLower = [0.8; 1.3; 0.08; 0.001];
-        ThetaUpper = [1.2; 1.7; 0.12; 0.004];
+        ThetaLower = [0.8; 1.3; 0.08];%; 1];
+        ThetaUpper = [1.2; 1.7; 0.12];%; 4];
 
     end
     
@@ -97,7 +97,7 @@ for iModel = 1:nModels
     if modelLbl(iModel) == "SEIR"
         ThetaTrue = [par.R0; par.tR; par.pObs; par.obsSD];
     elseif modelLbl(iModel) == "LV"
-        ThetaTrue = [par.r; par.a; par.pObs; par.obsSD];
+        ThetaTrue = [par.r; par.a; par.pObs];%; par.obsSD];
     end
     
     

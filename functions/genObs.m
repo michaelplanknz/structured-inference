@@ -8,8 +8,10 @@ elseif par.noiseModel == "norm_SD_propMean"
     % Alternative could be, e.g. NegBin noise or Poisson distributed noise with
     % multiplicative Gaussian mean
     obs = max(0, eObs.*(1+par.obsSD*randn(size(eObs)) ));
+elseif par.noiseModel == "poisson"
+   obs = poissrnd(eObs);
 else
-   error("LLfunc: noiseModel type needs to be one of: 'const', 'propMean'");
+   error("noiseModel type needs to be one of: 'const', 'propMean', 'poisson'");
 end
 
 if par.obsIntFlag

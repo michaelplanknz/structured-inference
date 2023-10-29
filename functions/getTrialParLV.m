@@ -6,4 +6,4 @@ trialPar = par;
 trialPar.r  = Theta(1);
 trialPar.a = Theta(2);
 trialPar.pObs = Theta(3);
-trialPar.obsSD = Theta(4);
+%trialPar.obsSD = Theta(4);
