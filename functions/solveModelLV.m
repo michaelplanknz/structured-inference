@@ -15,7 +15,6 @@ if t(end) < par.tMax
     nPad = length(tPad);
     t = [t; tPad];
     Y = [Y; inf*ones(nPad, nVars)];
-    size(Y)
 end
 
 % Extract solution variables from ODE solver output

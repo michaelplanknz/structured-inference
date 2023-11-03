@@ -19,7 +19,7 @@ ThetaMLEImproved_contracted = ThetaMLEImproved(parsToProfile);
 nPars = length(Theta0_contracted);
 countProfile = zeros(nPars, 1);
 logLik = zeros(nPars, nMesh);
-parfor iPar = 1:nPars
+for iPar = 1:nPars
     ThetaMesh = linspace(ThetaLower_contracted(iPar), ThetaUpper_contracted(iPar), nMesh);
     jOther = setdiff(1:nPars, iPar);
 
@@ -28,7 +28,11 @@ parfor iPar = 1:nPars
     ThetaOther0 = ThetaMLEImproved_contracted(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart:nMesh
         objFn = @(ThetaOther)(-calcLogLikImproved(getPar, solveModel, transformSolution, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), parsToOptimise, runningValues, Theta0, lb, ub, options));
-        [x, f, ~, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb_contracted(jOther), ub_contracted(jOther), [], options);
+        try
+            [x, f, ~, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb_contracted(jOther), ub_contracted(jOther), [], options);
+        catch
+            0;
+        end
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run
         countProfile(iPar) = countProfile(iPar) + output.funcCount;
