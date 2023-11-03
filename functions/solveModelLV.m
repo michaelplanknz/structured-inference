@@ -1,6 +1,5 @@
 function sol = solveModelLV(par)
 
-
 tSpan = 0:1:par.tMax;
 
 % Set initial condition

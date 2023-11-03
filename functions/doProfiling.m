@@ -1,4 +1,4 @@
-function [logLik, countProfile] = doProfiling(getTrialPar, solveModel, obs, par, ThetaMLE, Theta0, lb, ub, ThetaLower, ThetaUpper, nMesh, options)
+function [logLik, countProfile] = doProfiling(getPar, solveModel, obs, ThetaMLE, Theta0, lb, ub, ThetaLower, ThetaUpper, nMesh, options)
 
 nPars = length(Theta0);      % number of parameters to profile
 countProfile = zeros(nPars, 1);
@@ -11,7 +11,7 @@ parfor iPar = 1:nPars
     iStart = find(ThetaMesh >= ThetaMLE(iPar), 1, 'first');        % start profiling from the MLE rightwards
     ThetaOther0 = ThetaMLE(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart:nMesh
-        objFn = @(ThetaOther)(-calcLogLik(getTrialPar, solveModel, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
+        objFn = @(ThetaOther)(-calcLogLik(getPar, solveModel, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar)));
         [x, f, ~, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb(jOther), ub(jOther), [], options);
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run
@@ -21,7 +21,7 @@ parfor iPar = 1:nPars
     % now profile from the MLE leftwards
     ThetaOther0 = ThetaMLE(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart-1:-1:1
-        objFn = @(ThetaOther)(-calcLogLik(getTrialPar, solveModel, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), par));
+        objFn = @(ThetaOther)(-calcLogLik(getPar, solveModel, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar)));
         [x, f, ~, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb(jOther), ub(jOther), [], options);
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run

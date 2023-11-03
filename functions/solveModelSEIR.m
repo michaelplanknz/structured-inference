@@ -1,7 +1,7 @@
 function sol = solveModelSEIR(par)
 
-
 tSpan = 0:1:par.tMax;
+
 
 % Define initial number in each compartment
 S0 = par.popSize;       % susceptible

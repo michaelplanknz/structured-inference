@@ -1,4 +1,4 @@
-function par = getParSEIR();
+function par = getParSEIR(Theta);
 
 % Simulation parameters
 par.popSize = 5e6;      % population size
@@ -8,17 +8,17 @@ par.seedSize = 20;      % magnitude of seeding event (number of introduced infec
 par.seedDur = 1;        % parameter controlling duration of seeding event (days) = SD of Gaussian forcing function
 
 % Epi parameters
-par.R0 = 1.3;           % R0
+par.R0 = Theta(1);           % R0
 par.tE = 2;             % avg exposed time (days)
 par.tI = 4;             % avg infectious time (days)
-par.tR = 300;           % avg immune time (days)
+par.tR = Theta(2);           % avg immune time (days)
 
 % Observation parameters
-par.pObs = 0.01;        % proportion of infections observed
+par.pObs = Theta(3);        % proportion of infections observed
 par.tObs = 3;           % avg time from becoming infectious to being observed (days)
 
 % Noise model and parameters
 par.noiseModel = "norm_SD_propMean";        % noise model is normal with SD proportional to mean
 par.obsIntFlag = 1;     % set flag to indicate observations are rounded to integer values
-par.obsSD = 0.2;        % SD of multiplicative noise on observed values
+par.obsSD = Theta(4);        % SD of multiplicative noise on observed values
 

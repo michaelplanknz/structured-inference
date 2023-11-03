@@ -1,15 +1,16 @@
-function LL = calcLogLik(getTrialPar, solveModel, obs, Theta, par)
+function LL = calcLogLik(getPar, solveModel, obs, Theta)
 
 % Calculate log likelihood of observed data obs under parameters Theta
 % par is the structrue containing all model parameters
 % Theta is the vector of selected parameters to be fitted 
 
 
-% Construct a modified parameter structure by overwriting the default settings with the specified values of Theta
-par = getTrialPar(Theta, par);
+% Get parameter strcutre for the specified values of Theta
+par = getPar(Theta);
 
 % Solve forward model
 sol = solveModel(par); 
 
-LL = LLfunc(sol.eObs, obs, par.obsSD, par.noiseModel);
+% Call likelihood function
+LL = LLfunc(sol.eObs, obs, par);
 
