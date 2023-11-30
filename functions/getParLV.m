@@ -18,3 +18,5 @@ par.pObs = Theta(4);        % proportion of population observed
 % Noise model and parameters
 par.noiseModel = "poisson";        % noise model is normal with SD proportional to mean
 par.obsIntFlag = 0;     % set flag to indicate observations are not rounded to integer values
+
+par.gridSearchFlag = 0;     % set to 1 to do a preliminary grid search of the optimised parameter if the default starting value returns Nan

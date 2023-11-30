@@ -13,6 +13,7 @@ savFolder = "figures/";
 
 nMesh = 21;     % number of points in parameter mesh for profiles
 
+%modelLbl = ["SEIR", "LV", "RAD_PDE"];        % labels for models - can include "SEIR", "LV", "RAD_PDE"
 modelLbl = ["RAD_PDE"];        % labels for models - can include "SEIR", "LV", "RAD_PDE"
 
 options = optimoptions('fmincon', 'Display', 'off');
@@ -94,7 +95,7 @@ for iModel = 1:nModels
         ThetaLower = [0.8; 1.3; 0.9; 0.08];%; 1];
         ThetaUpper = [1.2; 1.7; 1.1; 0.12];%; 4];
 
-    elseif modelLbl == "RAD_PDE"
+    elseif modelLbl(iModel) == "RAD_PDE"
        % Functions defining RAD_PDE model and parameter ranges and initial conditions for MLE
         getPar = @getParRAD_PDE;
         solveModel = @solveModelRAD_PDE;
@@ -117,8 +118,10 @@ for iModel = 1:nModels
 
                
         % Define lower and upper bounds on fitted parameters
-        lb = [0.2; -5; 1; 0];
-        ub = [50; 5; 100; 50];
+%         lb = [0.2; -5; 1; 0];
+%         ub = [50; 5; 100; 50];
+        lb = [0; -50; 1; 0];
+        ub = [100; 50; 100; 50];
         
         % Profile intervals for each parameter
         ThetaLower = [0.8; 0.4; 1.6; 4];

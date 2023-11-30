@@ -23,3 +23,6 @@ par.tObs = 3;           % avg time from becoming infectious to being observed (d
 % par.obsSD = Theta(4);        % SD of multiplicative noise on observed values
 par.noiseModel = "negbin";
 par.obsK = Theta(4);
+
+par.gridSearchFlag = 0;     % set to 1 to do a preliminary grid search of the optimised parameter if the default starting value returns Nan
+
