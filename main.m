@@ -13,7 +13,7 @@ savFolder = "figures/";
 
 nMesh = 21;     % number of points in parameter mesh for profiles
 
-modelLbl = ["SEIR"];        % labels for models - can include "SEIR", "LV", "RAD-PDE"
+modelLbl = ["SEIR"];        % labels for models - can include "SEIR", "LV", "RAD_PDE"
 
 options = optimoptions('fmincon', 'Display', 'off');
 
@@ -46,23 +46,26 @@ for iModel = 1:nModels
         
         % Specify true values of parameters to be fitted
         parLbl = ["R0", "tR", "pObs", "obsSD"];
-        ThetaTrue = [1.3; 300; 0.01; 0.2];
+        ThetaTrue = [1.3; 300; 0.01; 30];
 
         % Indices and values of parameters in parLbl to optimise without re-evaluating forward model in the improved method
         parsToOptimise = 3;
         runningValues = 1;      % always run forward model with pObs = 1 under the improved method
 
         % Initial guess for fitted parameters [R0, tR, pObs, obsSD]
-        Theta0 = [1.5; 400; 0.1; 0.4];
+        Theta0 = [1.5; 400; 0.1; 25];
+
                
         % Define lower and upper bounds on fitted parameters
         lb = [0; 0; 0; 0];
-        ub = [20; 2000; 1; 2];
+        ub = [20; 2000; 1; 100];
         
         % Profile intervals for each parameter
-        ThetaLower = [1.2; 250; 0.005; 0.15];
-        ThetaUpper = [1.4; 350; 0.015; 0.4];
-    
+        ThetaLower = [1.2; 250; 0.005; 25];
+        ThetaUpper = [1.4; 350; 0.015; 35];
+
+
+
     elseif modelLbl(iModel) == "LV"
         % Functions defining LV model and parameter ranges and initial conditions for MLE
         getPar = @getParLV;

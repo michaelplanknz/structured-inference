@@ -18,7 +18,8 @@ par.pObs = Theta(3);        % proportion of infections observed
 par.tObs = 3;           % avg time from becoming infectious to being observed (days)
 
 % Noise model and parameters
-par.noiseModel = "norm_SD_propMean";        % noise model is normal with SD proportional to mean
-par.obsIntFlag = 1;     % set flag to indicate observations are rounded to integer values
-par.obsSD = Theta(4);        % SD of multiplicative noise on observed values
-
+% par.noiseModel = "norm_SD_propMean";        % noise model is normal with SD proportional to mean
+% par.obsIntFlag = 1;     % set flag to indicate observations are rounded to integer values
+% par.obsSD = Theta(4);        % SD of multiplicative noise on observed values
+par.noiseModel = "negbin";
+par.obsK = Theta(4);

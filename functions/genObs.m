@@ -16,6 +16,6 @@ else
    error("noiseModel type needs to be one of: 'const', 'propMean', 'poisson', 'negbin'");
 end
 
-if par.obsIntFlag
+if ismember(par.noiseModel, ["norm_SD_const", "norm_SD_propMean"]) && par.obsIntFlag
     obs = round(obs);
 end

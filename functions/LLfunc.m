@@ -24,7 +24,9 @@ elseif par.noiseModel == "poisson"
     Ci = [0, cumsum( log(1:max(yData)) )]';  % vector of cumulative sum of log(integers) for efficient calculation of log(k!) in LL
     LL = sum( yData.*log(yMean_pos) - yMean_pos - Ci(1+yData) ); 
 elseif par.noiseModel == "negbin"       % NegBin with dispersion factor k
-    LL = nPoints * (-gammaln(par.obsK) + par.obsK*log(par.obsK)) + sum( gammaln(yData+par.obsK) - gammaln(yData+1) + yData.*log(yMean) - (yData+par.obsK).*log(yMean+par.obsK) );
+    yMean_pos = max(small, yMean);   % To avoid numerical problems, replace non-positive values with a small positive number
+
+    LL = nPoints * (-gammaln(par.obsK) + par.obsK*log(par.obsK)) + sum( gammaln(yData+par.obsK) - gammaln(yData+1) + yData.*log(yMean_pos) - (yData+par.obsK).*log(yMean_pos+par.obsK) );
 else
    error("par.noiseModel type needs to be one of: 'const', 'propMean', 'poisson', 'negbin'");
 end
