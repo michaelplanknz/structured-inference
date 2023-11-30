@@ -1,10 +1,10 @@
-function plotGraphs(sol, solMLE, obs, logLik, ThetaMLE, ThetaTrue, ThetaLower, ThetaUpper, nMesh, countMLE, countProfile, xLbl, yLbl, parLbl, savLbl, savFolder, iCall)
+function plotGraphs(sol, solMLE, obs, logLik, ThetaMLE, parsToProfile, nMesh, countMLE, countProfile, mdl, savLbl, savFolder, iCall)
 
 h = figure(2*(iCall-1)+1);
 plot(sol.xPlot, sol.eObs, solMLE.xPlot, solMLE.eObs , sol.xPlot, obs, '.' )
 legend('actual', 'MLE', 'data')
-xlabel(xLbl)
-ylabel(yLbl)
+xlabel(mdl.xLbl)
+ylabel(mdl.yLbl)
 %ylim([0 inf])
 title(sprintf('MLE %i evaluations', countMLE))
 drawnow
@@ -14,15 +14,15 @@ saveas(gcf, savFolder+"mle_"+savLbl, 'png');
 
 h = figure(2*iCall);
 h.Position = [   560         239        1012         709];
-nPars = length(ThetaTrue);      % number of parameters to profile
+nPars = length(parsToProfile);      % number of parameters to profile
 for iPar = 1:nPars
-    ThetaMesh = linspace(ThetaLower(iPar), ThetaUpper(iPar), nMesh);
+    ThetaMesh = linspace(mdl.ThetaLower(parsToProfile(iPar)), mdl.ThetaUpper(parsToProfile(iPar)), nMesh);
     subplot(2, 2, iPar)
     plot(ThetaMesh, logLik(iPar, :))
-    xline(ThetaMLE(iPar), 'r--');
-    xline(ThetaTrue(iPar), 'k--');
+    xline(ThetaMLE(parsToProfile(iPar)), 'r--');
+    xline(mdl.ThetaTrue(parsToProfile(iPar)), 'k--');
     legend('profile likelihood', 'MLE', 'actual')
-    xlabel(parLbl(iPar))
+    xlabel(mdl.parLbl(parsToProfile(iPar)))
     ylabel('log likelihood')
     title(sprintf('Profile %i evaluations', countProfile(iPar)))
     drawnow
