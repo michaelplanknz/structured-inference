@@ -13,7 +13,7 @@ savFolder = "figures/";
 
 nMesh = 21;     % number of points in parameter mesh for profiles
 
-modelLbl = ["SEIR", "LV"];        % labels for models
+modelLbl = ["SEIR"];        % labels for models - can include "SEIR", "LV", "RAD-PDE"
 
 options = optimoptions('fmincon', 'Display', 'off');
 

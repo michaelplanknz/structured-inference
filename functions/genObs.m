@@ -10,8 +10,10 @@ elseif par.noiseModel == "norm_SD_propMean"
     obs = max(0, eObs.*(1+par.obsSD*randn(size(eObs)) ));
 elseif par.noiseModel == "poisson"
    obs = poissrnd(eObs);
+elseif par.noiseModel == "negbin"
+    obs = nbinrnd(par.obsK, par.obsK./(eObs+par.obsK));
 else
-   error("noiseModel type needs to be one of: 'const', 'propMean', 'poisson'");
+   error("noiseModel type needs to be one of: 'const', 'propMean', 'poisson', 'negbin'");
 end
 
 if par.obsIntFlag
