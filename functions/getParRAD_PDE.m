@@ -1,11 +1,15 @@
 function par = getParRAD_PDE(Theta);
 
 % Simulation parameters
-par.tMax = 100;        % simulation time
+par.tObs = 100;        % simulation time
 par.C0 = 100;          % boundary condition
-                        
 
+par.xObs = 0:5:100;   % x points at which data is observed 
 
+% PDE coefficients
+par.D = Theta(1);
+par.V = Theta(2);
+par.R = Theta(3);
 
 
 % Noise model and parameters

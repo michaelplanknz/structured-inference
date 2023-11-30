@@ -2,7 +2,7 @@ function obs = genObs(eObs, par)
 
 
 if par.noiseModel == "norm_SD_const" 
-    obs = max(0,  eObs + par.obsSD*randn(size(eObs)) );
+    obs =  eObs + par.obsSD*randn(size(eObs)) ;
 elseif par.noiseModel == "norm_SD_propMean"
     % Simple noise model is just integer-rounded multiplicative Gaussian noise 
     % Alternative could be, e.g. NegBin noise or Poisson distributed noise with

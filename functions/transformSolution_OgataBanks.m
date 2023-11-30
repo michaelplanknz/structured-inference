@@ -1,8 +1,12 @@
 function eObs = transformSolution_OgataBanks(Phi, sol) 
 
-% Transform function for the SEIR model (and possibly others)
-% In this model, the optimised parameter Phi represent pObs, the probability that an infection is reported as a case.
-% This simply mutliplies the expected observation in the solution to the model where pObs=1
+% Here Phi represents the retardation factor R
+% In this instance, sol represents the Ogata Banks solution when R=1
+% To transform the Ogata Banks solutuion for a value of R>1, use the scaling relationship c(x, t, R) = c(x, t/R, 1)
+ 
 
-eObs = Phi * sol.eObs;
+tObs = max(sol.tt);
+cTrans = interp1(sol.tt, sol.c, tObs/Phi);
+
+eObs = (Phi-1)*cTrans;
 

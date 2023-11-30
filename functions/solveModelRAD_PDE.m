@@ -1,27 +1,19 @@
-function sol = solveModelLV(par)
+function sol = solveModelRAD_PDE(par)
 
-tSpan = 0:1:par.tMax;
+% Set up t grid for evaluating PDE solution
+nPoints = 1001;
+sol.tt = linspace(0, par.tObs, nPoints);
 
-% Set initial condition
-IC = par.y0;
+[X, T] = meshgrid(par.xObs, sol.tt);
 
-% Solve ODE
-[t, Y] = ode45(@(t, x)odesLV(t, x, par), tSpan, IC);
+% Evaluate Ogata-Banks solution
+sol.c = 0.5 * par.C0 * ( erfc((X-par.V/par.R*T)./(sqrt(4*par.D/par.R*T))) + exp(X*par.V/par.D).*erfc((X+par.V/par.R*T)./(sqrt(4*par.D/par.R*T))) );
+sol.s = (par.R-1).*sol.c;
 
-% If ODE solution terminates before tMax (because of numerical problems), pad solution with Y=infinity 
-if t(end) < par.tMax
-    nVars = length(IC);
-    tPad = ((t(end)+1):1:par.tMax)';
-    nPad = length(tPad);
-    t = [t; tPad];
-    Y = [Y; inf*ones(nPad, nVars)];
-end
 
-% Extract solution variables from ODE solver output
-sol.t = t;
-sol.prey = Y(:, 1);                            % susceptible
-sol.pred = Y(:, 2);                            % exposed
+% Hack for now - in plotGraphs.m solutions and data are by default plotted against sol.t so use this to store x values
+sol.t = par.xObs;
 
 % Calculate mean (expected) observations
-sol.eObs = par.pObs*[sol.prey, sol.pred];
+sol.eObs = sol.s(end, :);
 

@@ -5,7 +5,7 @@ plot(sol.t, sol.eObs, solMLE.t, solMLE.eObs , sol.t, obs, '.' )
 legend('actual', 'MLE', 'data')
 xlabel(xLbl)
 ylabel(yLbl)
-ylim([0 inf])
+%ylim([0 inf])
 title(sprintf('MLE %i evaluations', countMLE))
 drawnow
 pause(0.1)

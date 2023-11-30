@@ -13,7 +13,7 @@ savFolder = "figures/";
 
 nMesh = 21;     % number of points in parameter mesh for profiles
 
-modelLbl = ["SEIR"];        % labels for models - can include "SEIR", "LV", "RAD_PDE"
+modelLbl = ["RAD_PDE"];        % labels for models - can include "SEIR", "LV", "RAD_PDE"
 
 options = optimoptions('fmincon', 'Display', 'off');
 
@@ -65,7 +65,6 @@ for iModel = 1:nModels
         ThetaUpper = [1.4; 350; 0.015; 35];
 
 
-
     elseif modelLbl(iModel) == "LV"
         % Functions defining LV model and parameter ranges and initial conditions for MLE
         getPar = @getParLV;
@@ -94,6 +93,38 @@ for iModel = 1:nModels
         % Profile intervals for each parameter
         ThetaLower = [0.8; 1.3; 0.9; 0.08];%; 1];
         ThetaUpper = [1.2; 1.7; 1.1; 0.12];%; 4];
+
+    elseif modelLbl == "RAD_PDE"
+       % Functions defining RAD_PDE model and parameter ranges and initial conditions for MLE
+        getPar = @getParRAD_PDE;
+        solveModel = @solveModelRAD_PDE;
+        transformSolution = @transformSolution_OgataBanks;
+        
+        % Labels for plotting model solution
+        xLbl = 'x';
+        yLbl = 's(x)';        
+        
+        % Specify true values of parameters to be fitted
+        parLbl = ["D", "V", "R", "obsSD"];
+        ThetaTrue = [1; 0.5; 2; 5];
+
+        % Indices and values of parameters in parLbl to optimise without re-evaluating forward model in the improved method
+        parsToOptimise = 3;
+        runningValues = 1;      % always run forward model with R = 1 under the improved method
+
+        % Initial guess for fitted parameters [R0, tR, pObs, obsSD]
+        Theta0 = [1.2; 0.4; 1.8; 4];
+
+               
+        % Define lower and upper bounds on fitted parameters
+        lb = [0.2; -5; 1; 0];
+        ub = [50; 5; 100; 50];
+        
+        % Profile intervals for each parameter
+        ThetaLower = [0.8; 0.4; 1.6; 4];
+        ThetaUpper = [1.2; 0.6; 2.4; 6];
+
+
     end
     
 

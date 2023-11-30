@@ -17,7 +17,11 @@ sol = solveModel(par);
 % Find optimal Phi (representing e.g. pObs) and associated log likelihood, starting from initial guess pObs = 0.5
 % Note this optimisation stop does not require the forward model to be re-run, it just evaluates the likelihood at scaled_yMean = pObs*yMean
 objFn = @(Phi)(-LLfunc( transformSolution(Phi, sol), obs, par));
-[PhiOpt, f, exitFlag] = fmincon(objFn, Theta0(parsToOptimise), [], [], [], [], lb(parsToOptimise), ub(parsToOptimise), [], options);           
+try
+    [PhiOpt, f, exitFlag] = fmincon(objFn, Theta0(parsToOptimise), [], [], [], [], lb(parsToOptimise), ub(parsToOptimise), [], options);           
+catch
+    pause
+end
 
 assert(exitFlag > 0)
 
