@@ -11,8 +11,8 @@ sol.c = 0.5 * par.C0 * ( erfc((X-par.V/par.R*T)./(sqrt(4*par.D/par.R*T))) + exp(
 sol.s = (par.R-1).*sol.c;
 
 
-% Hack for now - in plotGraphs.m solutions and data are by default plotted against sol.t so use this to store x values
-sol.t = par.xObs;
+% Horizontal axis coordinate against which observation values will be plotted
+sol.xPlot = par.xObs;
 
 % Calculate mean (expected) observations
 sol.eObs = sol.s(end, :);

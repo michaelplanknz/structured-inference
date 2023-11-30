@@ -25,6 +25,9 @@ sol.R2 = par.popSize - sum(Y(:, 1:4), 2);   % recovered (part II)
 sol.C1 = Y(:, 5);                             % cases (latent)
 sol.C2 = Y(:, 6);                             % cases (cumulative)
 
+% Horizontal axis coordinate against which observation values will be plotted
+sol.xPlot = sol.t;
+
 % Calculate mean (expected) observations
 sol.eObs = 1/par.tObs * sol.C1;
 

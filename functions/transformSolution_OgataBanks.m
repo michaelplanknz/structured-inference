@@ -5,8 +5,8 @@ function eObs = transformSolution_OgataBanks(Phi, sol)
 % To transform the Ogata Banks solutuion for a value of R>1, use the scaling relationship c(x, t, R) = c(x, t/R, 1)
  
 
-tObs = max(sol.tt);
-cTrans = interp1(sol.tt, sol.c, tObs/Phi);
+tObs = max(sol.t);
+cTrans = interp1(sol.t, sol.c, tObs/Phi);
 
 eObs = (Phi-1)*cTrans;
 

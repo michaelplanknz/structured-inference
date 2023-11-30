@@ -1,7 +1,7 @@
 function plotGraphs(sol, solMLE, obs, logLik, ThetaMLE, ThetaTrue, ThetaLower, ThetaUpper, nMesh, countMLE, countProfile, xLbl, yLbl, parLbl, savLbl, savFolder, iCall)
 
 h = figure(2*(iCall-1)+1);
-plot(sol.t, sol.eObs, solMLE.t, solMLE.eObs , sol.t, obs, '.' )
+plot(sol.xPlot, sol.eObs, solMLE.xPlot, solMLE.eObs , sol.xPlot, obs, '.' )
 legend('actual', 'MLE', 'data')
 xlabel(xLbl)
 ylabel(yLbl)

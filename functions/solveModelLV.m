@@ -22,6 +22,9 @@ sol.t = t;
 sol.prey = Y(:, 1);                            % susceptible
 sol.pred = Y(:, 2);                            % exposed
 
+% Horizontal axis coordinate against which observation values will be plotted
+sol.xPlot = sol.t;
+
 % Calculate mean (expected) observations
 sol.eObs = par.pObs*[sol.prey, sol.pred];
 

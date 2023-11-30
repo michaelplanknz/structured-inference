@@ -37,7 +37,7 @@ if length(parsToOptimise) == 1 & par.gridSearchFlag
 end
 
 if validStartFlag
-    [PhiOpt, f, exitFlag] = fmincon(objFn, Theta0(parsToOptimise), [], [], [], [], lb(parsToOptimise), ub(parsToOptimise), [], options);           
+    [PhiOpt, f] = fmincon(objFn, Theta0(parsToOptimise), [], [], [], [], lb(parsToOptimise), ub(parsToOptimise), [], options);           
     LL = -f;        % f is negative log likelihood so return -f
 else
     LL = -inf;
