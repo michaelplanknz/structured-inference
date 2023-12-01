@@ -1,3 +1,7 @@
+*.pptx
+*.png
 *.asv
 *.pdf
+results/
+figures/
 desktop.ini

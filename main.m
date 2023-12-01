@@ -13,8 +13,8 @@ savFolder = "figures/";
 
 nMesh = 21;     % number of points in parameter mesh for profiles
 
-%modelLbl = ["SEIR", "LV", "RAD_PDE"];        % labels for models - can include "SEIR", "LV", "RAD_PDE"
-modelLbl = ["RAD_PDE"];        % labels for models - can include "SEIR", "LV", "RAD_PDE"
+modelLbl = ["SEIR", "LV", "RAD_PDE"]';        % labels for models - can include "SEIR", "LV", "RAD_PDE"
+%modelLbl = ["RAD_PDE"]';        % labels for models - can include "SEIR", "LV", "RAD_PDE"
 
 options = optimoptions('fmincon', 'Display', 'off');
 
@@ -106,3 +106,10 @@ for iModel = 1:nModels
 end
 
 fprintf('Model %i.  Calls: basic %i, improved %i.  Relative error: basic %.3e, improved, %.3d\n', [1:nModels; totCallsBasic'; totCallsImproved'; relErrBasic'; relErrImproved'])
+
+outTab = table(modelLbl, relErrBasic, relErrImproved, totCallsBasic, totCallsImproved);
+writetable(outTab, 'results/results.csv');
+
+
+
+

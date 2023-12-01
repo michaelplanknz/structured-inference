@@ -18,7 +18,7 @@ mdl.parsToOptimise = 3;
 mdl.runningValues = 1;      % always run forward model with R = 1 under the improved method
 
 % Initial guess for fitted parameters [R0, tR, pObs, obsSD]
-mdl.Theta0 = [1.2; 0.4; 1.8; 4];
+mdl.Theta0 = [1.1; 0.4; 1.8; 4];
 
        
 % Define lower and upper bounds on fitted parameters
