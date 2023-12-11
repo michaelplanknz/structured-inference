@@ -46,7 +46,7 @@ for iPar = 1:nPars
     end
     xline(ThetaMLE(iPar), 'b--');
     if ~isempty(ind)
-        xline(ThetaMLEImproved(ind), 'r--');
+        xline(ThetaMLEImproved(iPar), 'r--');
     end
     xline(mdl.ThetaTrue(iPar), 'k--');
     if ~isempty(ind) & legendDoneFlag == 0
