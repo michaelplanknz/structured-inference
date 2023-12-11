@@ -4,7 +4,13 @@ function [ThetaMLE, parMLE, solMLE, countMLE] = doMLE(mdl, obs, options)
 objFn = @(Theta)(-calcLogLik(mdl, obs, Theta));
 
 % Local search starting from Theta0...
-[ThetaMLE, ~, ~, output] = fmincon( objFn, mdl.Theta0, [], [], [], [], mdl.lb, mdl.ub, [], options);
+%[ThetaMLE, ~, ~, output] = fmincon( objFn, mdl.Theta0, [], [], [], [], mdl.lb, mdl.ub, [], options);
+
+gs = GlobalSearch;
+gs.MaxTime = mdl.GSMaxTime;
+problem = createOptimProblem('fmincon', 'x0', mdl.Theta0, 'objective', objFn,'lb', mdl.lb, 'ub', mdl.ub, 'options', options);
+[ThetaMLE, ~, ~, output]  = run(gs, problem);
+
 countMLE = output.funcCount;
 
 % ...or global search

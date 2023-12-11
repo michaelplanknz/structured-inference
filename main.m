@@ -69,8 +69,8 @@ for iModel = 1:nModels
     [logLik, countProfile] = doProfiling(mdl, obs, ThetaMLE, nMesh, options);
     
     % Plotting
-    parsToProfile = 1:length(mdl.Theta0);
-    plotGraphs(sol, solMLE, obs, logLik, ThetaMLE, parsToProfile, nMesh, countMLE, countProfile, mdl, "basic_"+modelLbl(iModel), savFolder, 2*iModel-1);
+%    parsToProfile = 1:length(mdl.Theta0);
+ %   plotGraphs(sol, solMLE, obs, logLik, ThetaMLE, parsToProfile, nMesh, countMLE, countProfile, mdl, "basic_"+modelLbl(iModel), savFolder, 2*iModel-1);
     
     
     
@@ -94,7 +94,7 @@ for iModel = 1:nModels
     
     % Plotting
     parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
-    plotGraphs(sol, solMLEImproved, obs, logLikImproved, ThetaMLEImproved, parsToProfile, nMesh, countMLEImproved, countProfileImproved, mdl, "structured_"+modelLbl(iModel), savFolder, 2*iModel);
+    plotGraphs(sol, obs, solMLE, logLik, ThetaMLE, solMLEImproved, logLikImproved, ThetaMLEImproved, parsToProfile, nMesh, mdl, modelLbl(iModel), savFolder, iModel);
     
 
     % Record some summary statistics for this model

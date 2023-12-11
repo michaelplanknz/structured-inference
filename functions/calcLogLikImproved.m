@@ -26,7 +26,7 @@ validStartFlag = isfinite(objFn(x));
 % If default startng value is invalid, and the grid search flag is set
 % (only one parameter is being optimised) conduct a grid search to try and
 % find a valid starting value
-if length(mdl.parsToOptimise) == 1 & par.gridSearchFlag
+if length(mdl.parsToOptimise) == 1 & mdl.gridSearchFlag
     iAttempt = 1;
     while validStartFlag == 0 & iAttempt < maxAttempts
         h = haltonSeq(iAttempt, 2);

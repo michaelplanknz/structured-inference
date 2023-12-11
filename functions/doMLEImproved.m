@@ -9,7 +9,13 @@ parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
 objFn = @(Theta_contracted)(-calcLogLikImproved(mdl, obs, Theta_contracted, options));
 
 % Local search starting from Theta0...
-[ThetaMLE_contracted, ~, ~, output] = fmincon( objFn, mdl.Theta0(parsToProfile), [], [], [], [], mdl.lb(parsToProfile), mdl.ub(parsToProfile), [], options );
+%[ThetaMLE_contracted, ~, ~, output] = fmincon( objFn, mdl.Theta0(parsToProfile), [], [], [], [], mdl.lb(parsToProfile), mdl.ub(parsToProfile), [], options );
+
+gs = GlobalSearch;
+gs.MaxTime = mdl.GSMaxTime;
+problem = createOptimProblem('fmincon', 'x0', mdl.Theta0(parsToProfile), 'objective', objFn, 'lb', mdl.lb(parsToProfile), 'ub', mdl.ub(parsToProfile), 'options', options);
+[ThetaMLE_contracted, ~, ~, output]  = run(gs, problem);
+
 countMLEImproved = output.funcCount;
 
 % Post-calculate optimal value of parameter(s) to be optimised

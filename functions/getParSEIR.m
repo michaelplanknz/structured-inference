@@ -24,5 +24,4 @@ par.tObs = 3;           % avg time from becoming infectious to being observed (d
 par.noiseModel = "negbin";
 par.obsK = Theta(4);
 
-par.gridSearchFlag = 0;     % set to 1 to do a preliminary grid search of the optimised parameter if the default starting value returns Nan
 

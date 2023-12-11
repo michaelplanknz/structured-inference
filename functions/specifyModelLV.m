@@ -28,3 +28,8 @@ mdl.ub = [10; 10; 5; 1];
 mdl.ThetaLower = [0.8; 1.3; 0.9; 0.08];
 mdl.ThetaUpper = [1.2; 1.7; 1.1; 0.12];
 
+mdl.gridSearchFlag = 1;     % set to 1 to do a preliminary grid search of the optimised parameter if the default starting value returns Nan
+
+% Maximum time for the local search optimiser (can be Inf to run without limit)
+mdl.GSMaxTime = 300;
+
