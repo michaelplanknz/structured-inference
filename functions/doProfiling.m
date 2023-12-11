@@ -21,7 +21,7 @@ parfor iPar = 1:nPars
     % now profile from the MLE leftwards
     iStart = find(ThetaMesh < ThetaMLE(iPar), 1, 'last');        % start profiling from the MLE leftwards
     ThetaOther0 = ThetaMLE(jOther);                                % use MLE as initial guess for first run
-    for iMesh = iStart-1:-1:1
+    for iMesh = iStart:-1:1
         objFn = @(ThetaOther)(-calcLogLik(mdl, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar)));
         [x, f, ~, output] = fmincon(objFn, ThetaOther0, [], [], [], [], mdl.lb(jOther), mdl.ub(jOther), [], options);
         ll(iMesh) = -f;

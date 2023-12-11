@@ -35,8 +35,9 @@ parfor iPar = 1:nPars
     end
 
     % now profile from the MLE leftwards
+    iStart = find(ThetaMesh < ThetaMLEImproved_contracted(iPar), 1, 'last');        % start profiling from the MLE leftwards
     ThetaOther0 = ThetaMLEImproved_contracted(jOther);                                % use MLE as initial guess for first run
-    for iMesh = iStart-1:-1:1
+    for iMesh = iStart:-1:1
         objFn = @(ThetaOther)(-calcLogLikImproved(mdl, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar), options));
         [x, f, ~, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb_contracted(jOther), ub_contracted(jOther), [], options);
         ll(iMesh) = -f;
