@@ -5,6 +5,9 @@ close all
 % Global settings
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% For reproducibility
+rng(19250);
+
 % Folder with Matlab functions
 addpath('functions');
 
@@ -15,6 +18,7 @@ nReps = 100;    % number of independently generated data sets to analyse for eac
 nMesh = 21;     % number of points in parameter mesh for profiles
 
 modelLbl = ["SEIR", "LV", "RAD_PDE"]';        % labels for models - can include "SEIR", "LV", "RAD_PDE"
+modelLong = ["SEIR", "Predator-prey", "Adv. diff."]';        % labels for models - can include "SEIR", "LV", "RAD_PDE"
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -101,7 +105,10 @@ end
 
 repNumber = (1:nReps)';
 outTab = table(repNumber, relErrBasic, relErrImproved, totCallsBasic, totCallsImproved);
-writetable(outTab, 'results/results.csv');
+
+save('results/results.mat')
+
+writeLatex(outTab, modelLong, 'results/table.tex');
 
 
 
