@@ -1,4 +1,4 @@
-function plotGraphs(sol, obs, solMLE, logLik, ThetaMLE, solMLEImproved, logLikImproved, ThetaMLEImproved, parsToProfile, nMesh, mdl, savLbl, savFolder, iCall)
+function plotGraphs(sol, obs, solMLE, ThetaProfile, logLik, ThetaMLE, solMLEImproved, ThetaProfileImproved, logLikImproved, ThetaMLEImproved, parsToProfile, nMesh, mdl, savLbl, savFolder, iCall)
 
 
 
@@ -36,13 +36,12 @@ h.Position = [   560         239        1012         709];
 nPars = length(ThetaMLE);      % number of parameters to profile
 legendDoneFlag = 0;
 for iPar = 1:nPars
-    ThetaMesh = linspace(mdl.ThetaLower(iPar), mdl.ThetaUpper(iPar), nMesh);
-    subplot(2, 2, iPar)
-    plot(ThetaMesh, logLik(iPar, :))
+    subplot(ceil(nPars/2), 2, iPar)
+    plot(ThetaProfile(iPar, :), logLik(iPar, :))
     hold on
     ind = find(parsToProfile == iPar);
     if ~isempty(ind)
-        plot(ThetaMesh, logLikImproved(ind, :))
+        plot(ThetaProfileImproved(ind, :), logLikImproved(ind, :))
     end
     xline(ThetaMLE(iPar), 'b--');
     if ~isempty(ind)

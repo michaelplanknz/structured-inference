@@ -3,21 +3,21 @@ function dydt = odeSEIR(t, y, par)
 S = y(1);                       % susceptible
 E = y(2);                       % exposed
 I = y(3);                       % infectious
-R1 = y(4);                      % recovered (part I)
-R2 = par.popSize - sum(y(1:4)); % recovered (part II)
+R1 = y(4);                      % recovered (stage I)
+R2 = par.popSize - sum(y(1:4)); % recovered (stage II)
 C1 = y(5);                      % cases (latent)
 C2 = y(6);                      % cases (cumulative)
 
-% Force of infection proportional to number infectious plus seeding term
-FOI = par.R0 * (I/par.tI + par.seedSize * normpdf(t, par.tSeed, par.seedDur)) /par.popSize ;
+% Force of infection proportional to number infectious 
+FOI = par.R0 * (I*par.Mu) /par.popSize ;
 
-dSdt = -FOI * S  +  2/par.tR * R2;
-dEdt =  FOI * S  -  1/par.tE * E;
-dIdt =  1/par.tE * E  -  1/par.tI * I;
-dR1dt = 1/par.tI * I  -  2/par.tR * R1;
+dSdt = -FOI * S  +  2*par.w * R2;
+dEdt =  FOI * S  -  par.Gamma * E;
+dIdt =  par.Gamma * E  -  par.Mu * I;
+dR1dt = par.Mu * I  -  2*par.w * R1;
 
-dC1dt = par.pObs * 1/par.tE * E  -  1/par.tObs * C1;
-dC2dt = 1/par.tObs * C1;
+dC1dt = par.pObs * par.Gamma * E  -  par.obsRate * C1;
+dC2dt = par.obsRate * C1;
 
 dydt = [dSdt; dEdt; dIdt; dR1dt; dC1dt; dC2dt];
 

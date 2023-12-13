@@ -8,7 +8,6 @@ nTheta = length(ThetaOther)+length(iFocal);
 if max(iFocal) > nTheta
     error('Maximum value in iFocal cannot be greater than the sum of the lengths of ThetaFocal and ThetaOther')
 end
-assert(max(iFocal) <= nTheta);
 ThetaFull = nan(nTheta, 1);
 ThetaFull(iFocal) = ThetaFocal;
 ThetaFull(setdiff(1:nTheta, iFocal)) = ThetaOther;
