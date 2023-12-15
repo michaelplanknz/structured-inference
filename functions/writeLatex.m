@@ -5,7 +5,7 @@ qt = [0.25, 0.5, 0.75];
 fid = fopen(fName, 'w');
 
 fprintf(fid, '\\hline  \n');
-fprintf(fid, ' Model  & \\multicolumn{2}{l}{Rel. err. (\\%%)} & \\multicolumn{3}{l}{Function calls}  \\\\ \n');
+fprintf(fid, '{\\bf Model}  & \\multicolumn{2}{l}{\\bf Relative error (\\%%)} & \\multicolumn{3}{l}{\\bf Function calls}  \\\\ \n');
 fprintf(fid, '  & Basic & Structured & Basic & Structured & Improvement (\\%%) \\\\ \n');
 fprintf(fid, '\\hline  \n');
 for iModel = 1:length(modelLbl)

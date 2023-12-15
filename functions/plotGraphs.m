@@ -16,23 +16,32 @@ logLikImproved = results.logLikImproved;
 h = figure(2*(iCall-1)+1);
 h.Position = [        98         524        1043         420];
 subplot(1, 2, 1)
-pl1 = plot(sol.xPlot, sol.eObs, '-');
-hold on
-pl2 = plot(solMLE.xPlot, solMLE.eObs, '--');
 pl3 = plot(sol.xPlot, obs, '.' );
+hold on
+set(gca, 'ColorOrderIndex', 1)
+pl1 = plot(sol.xPlot, sol.eObs, '-');
+set(gca, 'ColorOrderIndex', 1)
+pl2 = plot(solMLE.xPlot, solMLE.eObs, '--');
 pl1(1).DisplayName = 'actual';
 pl2(1).DisplayName = 'MLE';
 pl3(1).DisplayName = 'data';
+for ii = 2:length(pl1)
+    pl1(ii).HandleVisibility = 'off';
+    pl2(ii).HandleVisibility = 'off';
+    pl3(ii).HandleVisibility = 'off';
+end
 legend;
 xlabel(mdl.xLbl)
 ylabel(mdl.yLbl)
 %ylim([0 inf])
 title('(a)')
 subplot(1, 2, 2)
-pl1 = plot(sol.xPlot, sol.eObs, '-');
-hold on
-pl2 = plot(solMLEImproved.xPlot, solMLEImproved.eObs, '--');
 pl3 = plot(sol.xPlot, obs, '.' );
+hold on
+set(gca, 'ColorOrderIndex', 1)
+pl1 = plot(sol.xPlot, sol.eObs, '-');
+set(gca, 'ColorOrderIndex', 1)
+pl2 = plot(solMLEImproved.xPlot, solMLEImproved.eObs, '--');
 xlabel(mdl.xLbl)
 ylabel(mdl.yLbl)
 %ylim([0 inf])
