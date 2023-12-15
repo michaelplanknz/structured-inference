@@ -1,5 +1,16 @@
-function plotGraphs(sol, obs, solMLE, ThetaProfile, logLik, ThetaMLE, solMLEImproved, ThetaProfileImproved, logLikImproved, ThetaMLEImproved, parsToProfile, nMesh, mdl, savLbl, savFolder, iCall)
+function plotGraphs(results, parsToProfile, mdl, savLbl, savFolder, iCall)
 
+% Extract variables from results structure
+sol = results.sol;
+obs = results.obs;
+solMLE = results.solMLE;
+ThetaMLE = results.ThetaMLE;
+ThetaProfile = results.ThetaProfile;
+logLik = results.logLik;
+solMLEImproved = results.solMLEImproved;
+ThetaMLEImproved = results.ThetaMLEImproved;
+ThetaProfileImproved = results.ThetaProfileImproved;
+logLikImproved = results.logLikImproved;
 
 
 h = figure(2*(iCall-1)+1);

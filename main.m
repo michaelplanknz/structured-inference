@@ -45,10 +45,11 @@ for iModel = 1:nModels
         mdl = specifyModelLV();
     elseif modelLbl(iModel) == "RAD_PDE"
         mdl = specifyModelRAD_PDE();
+    else
+        fprintf('Warning: model %s not found\n', modelLbl(iModel) )
     end
    
     mdl.options.Display = 'off';
-
     parfor iRep = 1:nReps
         fprintf('   rep %i/%i\n', iRep, nReps)
 
@@ -86,11 +87,17 @@ for iModel = 1:nModels
         % Profiling    
         [ThetaProfileImproved, logLikImproved, countProfileImproved] = doProfilingImproved(mdl, obs, ThetaMLEImproved, nMesh);
         
-        % Plotting
-        if iRep == 1
-            parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
-            plotGraphs(sol, obs, solMLE, ThetaProfile, logLik, ThetaMLE, solMLEImproved, ThetaProfileImproved, logLikImproved, ThetaMLEImproved, parsToProfile, nMesh, mdl, modelLbl(iModel), savFolder, iModel);
-        end
+        % Store results from this realisation in a structure array
+        results(iRep, iModel).sol = sol;
+        results(iRep, iModel).obs = obs;
+        results(iRep, iModel).solMLE = solMLE;
+        results(iRep, iModel).ThetaMLE = ThetaMLE;
+        results(iRep, iModel).ThetaProfile = ThetaProfile;
+        results(iRep, iModel).logLik = logLik;
+        results(iRep, iModel).solMLEImproved = solMLEImproved;
+        results(iRep, iModel).ThetaMLEImproved = ThetaMLEImproved;
+        results(iRep, iModel).ThetaProfileImproved = ThetaProfileImproved;
+        results(iRep, iModel).logLikImproved = logLikImproved;
     
         % Record some summary statistics for this model
         totCallsBasic(iRep, iModel) = countMLE + sum(countProfile);
@@ -101,12 +108,34 @@ for iModel = 1:nModels
     end
 end
 
-%fprintf('Model %i.  Calls: basic %i, improved %i.  Relative error: basic %.3e, improved, %.3d\n', [1:nModels; totCallsBasic'; totCallsImproved'; relErrBasic'; relErrImproved'])
+% Save results
+save('results/results.mat')
 
+
+
+
+
+
+
+% Plotting (for a single realisation) for each model
+iToPlot = 1;            % realisation number to plot
+for iModel = 1:nModels
+    % Specify model-specific functions and values here:
+    if modelLbl(iModel) == "SEIR"
+        mdl = specifyModelSEIR();
+    elseif modelLbl(iModel) == "LV"
+        mdl = specifyModelLV();
+    elseif modelLbl(iModel) == "RAD_PDE"
+        mdl = specifyModelRAD_PDE();
+    end
+
+    parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
+    plotGraphs(results(iToPlot, iModel), parsToProfile, mdl, modelLbl(iModel), savFolder, iModel);
+end
+
+% Create output table and write latex table
 repNumber = (1:nReps)';
 outTab = table(repNumber, relErrBasic, relErrImproved, totCallsBasic, totCallsImproved);
-
-save('results/results.mat')
 
 writeLatex(outTab, modelLong, 'results/table.tex');
 
