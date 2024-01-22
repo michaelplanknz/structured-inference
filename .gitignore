@@ -4,4 +4,7 @@
 *.pdf
 results/
 figures/
+papers/
+scraps/
+mat/
 desktop.ini
