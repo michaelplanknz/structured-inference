@@ -7,7 +7,11 @@ mdl.transformSolution = @transformSolution_OgataBanks;
 
 % Labels for plotting model solution
 mdl.xLbl = 'x';
-mdl.yLbl = 's(x)';        
+mdl.yLbl = 's(x)';     
+
+% Set this flag to 1 to fit model to synthetic data generated from a simulation of the model, or 0 to fit model to user-supplied data in the CSV file called mdl.dataFName in the data/ directory
+mdl.useSynthDataFlag = 1;
+mdl.dataFName = "";
 
 % Specify true values of parameters to be fitted
 mdl.parLbl = ["D", "V", "R", "obsSD"];

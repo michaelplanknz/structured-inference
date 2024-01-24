@@ -22,6 +22,7 @@ nMesh = 21;     % number of points in parameter mesh for profiles
 modelLbl = ["SEIR", "LV", "RAD_PDE"]';        % labels for models - can include "SEIR", "LV", "RAD_PDE"
 modelLong = ["SEIR", "Predator-prey", "Adv. diff."]';        % labels for models - can include "SEIR", "LV", "RAD_PDE"
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -57,13 +58,20 @@ for iModel = 1:nModels
     parfor iRep = 1:nReps
         fprintf('   rep %i/%i\n', iRep, nReps)
 
+
+
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Generate data from forward model
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        par = mdl.getPar(mdl.ThetaTrue);
-        sol = mdl.solveModel(par);
-        obs = genObs(sol.eObs, par);
+        if mdl.useSynthDataFlag 
+            par = mdl.getPar(mdl.ThetaTrue);
+            sol = mdl.solveModel(par);
+            obs = genObs(sol.eObs, par);
+        else
+            obs = readmatrix("data/"+mdl.dataFName);
+            sol = nan(size(obs));
+        end
         
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

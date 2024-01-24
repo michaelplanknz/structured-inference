@@ -9,6 +9,10 @@ mdl.transformSolution = @transformSolutionMultiply;
 mdl.xLbl = 'time (days)';
 mdl.yLbl = 'new daily cases';        
 
+% Set this flag to 1 to fit model to synthetic data generated from a simulation of the model, or 0 to fit model to user-supplied data in the CSV file called mdl.dataFName in the data/ directory
+mdl.useSynthDataFlag = 1;
+mdl.dataFName = "";
+
 % Specify true values of parameters to be fitted
 mdl.parLbl = ["R0", "w", "pObs", "obsK"];
 mdl.ThetaTrue = [1.3; 1/300; 0.1; 30];
