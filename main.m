@@ -11,8 +11,10 @@ rng(19250);
 % Folder with Matlab functions
 addpath('functions');
 
-% Folder for saving plots
-savFolder = "figures/";
+% Folder and filename for saving results and plots 
+savFolder = "results/";
+fNameOut = "results.mat";
+fNameTex = "table.tex";
 
 nReps = 100;    % number of independently generated data sets to analyse for each model
 nMesh = 21;     % number of points in parameter mesh for profiles
@@ -28,8 +30,10 @@ modelLong = ["SEIR", "Predator-prey", "Adv. diff."]';        % labels for models
 
 nModels = length(modelLbl);
 
-totCallsBasic = zeros(nReps, nModels);
-totCallsImproved = zeros(nReps, nModels);
+nCallsMLE_basic = zeros(nReps, nModels);
+nCallsProfile_basic = zeros(nReps, nModels);
+nCallsMLE_improved = zeros(nReps, nModels);
+nCallsProfile_improved = zeros(nReps, nModels);
 relErrBasic = zeros(nReps, nModels);
 relErrImproved = zeros(nReps, nModels);
 
@@ -100,17 +104,15 @@ for iModel = 1:nModels
         results(iRep, iModel).logLikImproved = logLikImproved;
     
         % Record some summary statistics for this model
-        totCallsBasic(iRep, iModel) = countMLE + sum(countProfile);
-        totCallsImproved(iRep, iModel) = countMLEImproved + sum(countProfileImproved);
+        nCallsMLE_basic(iRep, iModel) = countMLE;
+        nCallsProfile_basic(iRep, iModel) = sum(countProfile);
+        nCallsMLE_improved(iRep, iModel) = countMLEImproved;
+        nCallsProfile_improved(iRep, iModel) = sum(countProfileImproved);
         relErrBasic(iRep, iModel) = norm(ThetaMLE-mdl.ThetaTrue)/norm(mdl.ThetaTrue);
         relErrImproved(iRep, iModel) = norm(ThetaMLEImproved-mdl.ThetaTrue)/norm(mdl.ThetaTrue);
         
     end
 end
-
-% Save results
-save('results/results.mat')
-
 
 
 
@@ -134,11 +136,17 @@ for iModel = 1:nModels
 end
 
 % Create output table and write latex table
+totCallsBasic = nCallsMLE_basic + nCallsProfile_basic;
+totCallsImproved = nCallsMLE_improved + nCallsProfile_improved;
 repNumber = (1:nReps)';
-outTab = table(repNumber, relErrBasic, relErrImproved, totCallsBasic, totCallsImproved);
+outTab = table(repNumber, relErrBasic, relErrImproved, nCallsMLE_basic, nCallsProfile_basic, totCallsBasic, nCallsMLE_improved, nCallsProfile_improved, totCallsImproved);
 
-writeLatex(outTab, modelLong, 'results/table.tex');
+% Write latex for results table
+writeLatex(outTab, modelLong, savFolder+fNameTex);
 
+
+% Save results
+save(savFolder+fNameOut);
 
 
 
