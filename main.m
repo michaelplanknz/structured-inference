@@ -16,11 +16,12 @@ savFolder = "results/";
 fNameOut = "results.mat";
 fNameTex = "table.tex";
 
+% Global numerical settings
 nReps = 100;    % number of independently generated data sets to analyse for each model
 nMesh = 21;     % number of points in parameter mesh for profiles
 
-modelLbl = ["SEIR", "LV", "RAD_PDE"]';        % labels for models - can include "SEIR", "LV", "RAD_PDE"
-modelLong = ["SEIR", "Predator-prey", "Adv. diff."]';        % labels for models - can include "SEIR", "LV", "RAD_PDE"
+modelLbl = ["LV", "SEIR", "RAD_PDE"]';                      % labels for models - can include "LV", "SEIR", "RAD_PDE"
+modelLong = ["Predator-prey", "SEIR", "Adv. diff."]';       % labels to use in latex tables
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
