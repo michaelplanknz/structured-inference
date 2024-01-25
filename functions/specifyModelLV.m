@@ -14,7 +14,7 @@ mdl.useSynthDataFlag = 1;
 mdl.dataFName = "";
 
 % Specify true values of parameters to be fitted
-mdl.parLbl = ["r", "a", "mu", "pObs"];
+mdl.parLbl = ["r", "a", "mu", "p_{obs}"];
 mdl.ThetaTrue = [1; 1.5; 1; 0.1];
 
 % Indices and values of parameters in parLbl to optimise without re-evaluating forward model in the improved method
