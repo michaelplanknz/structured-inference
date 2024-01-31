@@ -9,10 +9,6 @@ mdl.transformSolution = @transformSolution_OgataBanks;
 mdl.xLbl = 'x';
 mdl.yLbl = 's(x)';     
 
-% Set this flag to 1 to fit model to synthetic data generated from a simulation of the model, or 0 to fit model to user-supplied data in the CSV file called mdl.dataFName in the data/ directory
-mdl.useSynthDataFlag = 1;
-mdl.dataFName = "";
-
 % Specify true values of parameters to be fitted
 mdl.parLbl = ["D", "v", "R", "\sigma"];
 mdl.ThetaTrue = [1; 0.5; 2; 3];
@@ -38,7 +34,4 @@ mdl.gridSearchFlag = 1;     % set to 1 to do a preliminary grid search of the op
 
 % Set fmincon options if required:
 mdl.options = optimoptions('fmincon');
-
-% Maximum time for the local search optimiser (can be Inf to run without limit)
-%mdl.GSMaxTime = inf;
 

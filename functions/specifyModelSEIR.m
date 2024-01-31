@@ -9,10 +9,6 @@ mdl.transformSolution = @transformSolutionMultiply;
 mdl.xLbl = 'time (days)';
 mdl.yLbl = 'new daily cases';        
 
-% Set this flag to 1 to fit model to synthetic data generated from a simulation of the model, or 0 to fit model to user-supplied data in the CSV file called mdl.dataFName in the data/ directory
-mdl.useSynthDataFlag = 1;
-mdl.dataFName = "";
-
 % Specify true values of parameters to be fitted
 mdl.parLbl = ["R_0", "w", "p_{obs}", "k"];
 mdl.ThetaTrue = [1.3; 1/300; 0.1; 30];
@@ -22,9 +18,7 @@ mdl.parsToOptimise = 3;
 mdl.runningValues = 1;      % always run forward model with pObs = 1 under the improved method
 
 % Initial guess for fitted parameters 
-%mdl.Theta0 = [1.5; 1/400; 0.15; 25];
 mdl.Theta0 = [1.25; 0.003; 0.12; 35];
-%mdl.Theta0 = 1.01*mdl.ThetaTrue;
 
        
 % Define lower and upper bounds on fitted parameters
@@ -41,5 +35,4 @@ mdl.gridSearchFlag = 1;     % set to 1 to do a preliminary grid search of the op
 % Set fmincon options if required:
 mdl.options = optimoptions('fmincon');
 
-% Maximum time for the local search optimiser (can be Inf to run without limit)
-%mdl.GSMaxTime = inf;
+

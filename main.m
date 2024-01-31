@@ -59,20 +59,14 @@ for iModel = 1:nModels
     parfor iRep = 1:nReps
         fprintf('   rep %i/%i\n', iRep, nReps)
 
-
-
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Generate data from forward model
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
-        if mdl.useSynthDataFlag 
-            par = mdl.getPar(mdl.ThetaTrue);
-            sol = mdl.solveModel(par);
-            obs = genObs(sol.eObs, par);
-        else
-            obs = readmatrix("data/"+mdl.dataFName);
-            sol = nan(size(obs));
-        end
+
+        par = mdl.getPar(mdl.ThetaTrue);
+        sol = mdl.solveModel(par);
+        obs = genObs(sol.eObs, par);
+
         
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

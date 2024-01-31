@@ -1,7 +1,12 @@
 function plotGraphs(results, parsToProfile, mdl, savLbl, savFolder, iCall)
 
 % Extract variables from results structure
-sol = results.sol;
+if isfield(results, 'sol')
+    trueSolFlag = 1;        % flag indicating whether the results structure contains the true solution or not
+    sol = results.sol;
+else
+    trueSolFlag = 0;
+end
 obs = results.obs;
 solMLE = results.solMLE;
 ThetaMLE = results.ThetaMLE;
@@ -16,19 +21,32 @@ logLikImproved = results.logLikImproved;
 h = figure(2*(iCall-1)+1);
 h.Position = [        98         524        1043         420];
 subplot(1, 2, 1)
-pl3 = plot(sol.xPlot, obs, '.' );
-hold on
-set(gca, 'ColorOrderIndex', 1)
-pl1 = plot(sol.xPlot, sol.eObs, '-');
-set(gca, 'ColorOrderIndex', 1)
-pl2 = plot(solMLE.xPlot, solMLE.eObs, '--');
-pl1(1).DisplayName = 'actual';
-pl2(1).DisplayName = 'MLE';
-pl3(1).DisplayName = 'data';
-for ii = 2:length(pl1)
-    pl1(ii).HandleVisibility = 'off';
-    pl2(ii).HandleVisibility = 'off';
-    pl3(ii).HandleVisibility = 'off';
+if trueSolFlag
+    pl3 = plot(sol.xPlot, obs, '.' );
+    pl3(1).DisplayName = 'data';
+    hold on
+    set(gca, 'ColorOrderIndex', 1)
+    pl1 = plot(sol.xPlot, sol.eObs, '-');
+    pl1(1).DisplayName = 'actual';
+    set(gca, 'ColorOrderIndex', 1)
+    pl2 = plot(solMLE.xPlot, solMLE.eObs, '--');
+    pl2(1).DisplayName = 'MLE';
+    for ii = 2:length(pl1)
+        pl1(ii).HandleVisibility = 'off';
+        pl2(ii).HandleVisibility = 'off';
+        pl3(ii).HandleVisibility = 'off';
+    end
+else
+    pl3 = plot(solMLE.xPlot, obs, '.' );
+    pl3(1).DisplayName = 'data';
+    hold on
+    set(gca, 'ColorOrderIndex', 1)
+    pl2 = plot(solMLE.xPlot, solMLE.eObs, '--');
+    pl2(1).DisplayName = 'MLE';
+    for ii = 2:length(pl2)
+        pl2(ii).HandleVisibility = 'off';
+        pl3(ii).HandleVisibility = 'off';
+    end
 end
 legend;
 xlabel(mdl.xLbl)
@@ -36,12 +54,19 @@ ylabel(mdl.yLbl)
 %ylim([0 inf])
 title('(a)')
 subplot(1, 2, 2)
-pl3 = plot(sol.xPlot, obs, '.' );
-hold on
-set(gca, 'ColorOrderIndex', 1)
-pl1 = plot(sol.xPlot, sol.eObs, '-');
-set(gca, 'ColorOrderIndex', 1)
-pl2 = plot(solMLEImproved.xPlot, solMLEImproved.eObs, '--');
+if trueSolFlag
+    pl3 = plot(sol.xPlot, obs, '.' );
+    hold on
+    set(gca, 'ColorOrderIndex', 1)
+    pl1 = plot(sol.xPlot, sol.eObs, '-');
+    set(gca, 'ColorOrderIndex', 1)
+    pl2 = plot(solMLEImproved.xPlot, solMLEImproved.eObs, '--');
+else
+    pl3 = plot(solMLE.xPlot, obs, '.' );
+    hold on
+    set(gca, 'ColorOrderIndex', 1)
+    pl2 = plot(solMLEImproved.xPlot, solMLEImproved.eObs, '--');
+end
 xlabel(mdl.xLbl)
 ylabel(mdl.yLbl)
 %ylim([0 inf])
@@ -67,9 +92,15 @@ for iPar = 1:nPars
     if ~isempty(ind)
         xline(ThetaMLEImproved(iPar), 'r--');
     end
-    xline(mdl.ThetaTrue(iPar), 'k--');
+    if trueSolFlag
+        xline(mdl.ThetaTrue(iPar), 'k--');
+    end
     if ~isempty(ind) & legendDoneFlag == 0
-       legend('profile likelihood (basic)', 'profile likelihood (structured)', 'MLE (basic)', 'MLE (structured)', 'actual')
+       if trueSolFlag
+          legend('profile likelihood (basic)', 'profile likelihood (structured)', 'MLE (basic)', 'MLE (structured)', 'actual')
+       else
+          legend('profile likelihood (basic)', 'profile likelihood (structured)', 'MLE (basic)', 'MLE (structured)')
+       end
        legendDoneFlag = 1;
     end
     xlabel(mdl.parLbl(iPar))
