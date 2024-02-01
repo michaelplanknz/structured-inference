@@ -12,5 +12,14 @@ par = mdl.getPar(Theta);
 sol = mdl.solveModel(par); 
 
 % Call likelihood function
-LL = LLfunc(sol.eObs, obs, par);
+try
+    LL = LLfunc(sol.eObs, obs, par);
+catch
+    fprintf('sol.eObs:\n');
+    disp(sol.eObs)
+    fprintf('obs:\n');
+    disp(obs)
+    fprintf('par:\n');
+    disp(par) 
+end
 

@@ -1,4 +1,4 @@
-function mdl = specifyModelSEIR();
+function mdl = specifyModelSEIR(varyParamsFlag)
 
 % Functions defining SEIR model and parameter ranges and initial conditions for MLE
 mdl.getPar = @getParSEIR;
@@ -12,6 +12,10 @@ mdl.yLbl = 'new daily cases';
 % Specify true values of parameters to be fitted
 mdl.parLbl = ["R_0", "w", "p_{obs}", "k"];
 mdl.ThetaTrue = [1.3; 1/300; 0.1; 30];
+if varyParamsFlag == 1        % add some (Gaussian) noise to parameter values
+    mdl.ThetaTrue = mdl.ThetaTrue + [0.2; 0.0005; 0.02; 6].*randn(4, 1);
+end
+
 
 % Indices and values of parameters in parLbl to optimise without re-evaluating forward model in the improved method
 mdl.parsToOptimise = 3;
@@ -24,6 +28,7 @@ mdl.Theta0 = [1.25; 0.003; 0.12; 35];
 % Define lower and upper bounds on fitted parameters
 mdl.lb = [1e-3; 1e-4; 1e-4; 1e-2];
 mdl.ub = [10; 1/10; 1; 100];
+mdl.ThetaTrue = max(mdl.lb, min(mdl.ub, mdl.ThetaTrue) );       % force true parameter values to be within specified bounds
 
 % Profile intervals for each parameter
 mdl.profileRange = 0.2;

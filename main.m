@@ -13,12 +13,14 @@ addpath('functions');
 
 % Folder and filename for saving results and plots 
 savFolder = "results/";
-fNameOut = "results.mat";
-fNameTex = "table.tex";
+fNameOut = "results";
+fNameTex = "table";
 
 % Global numerical settings
 nReps = 100;    % number of independently generated data sets to analyse for each model
 nMesh = 21;     % number of points in parameter mesh for profiles
+
+varyParamsFlag = 1;    % If set to 0, each rep will regenerate data using the *same* model parameters; if set                                                   to 1, each rep will randomly draw target parameter values and then regenerate data
 
 modelLbl = ["LV", "SEIR", "RAD_PDE"]';                      % labels for models - can include "LV", "SEIR", "RAD_PDE"
 modelLong = ["Predator-prey", "SEIR", "Adv. diff."]';       % labels to use in latex tables
@@ -44,25 +46,28 @@ for iModel = 1:nModels
     fprintf('\nModel %s\n', modelLbl(iModel))
 
 
-    % Specify model-specific functions and values here:
+    % Specify the model-specific functions here:
     if modelLbl(iModel) == "SEIR"
-        mdl = specifyModelSEIR();
+        getModel = @specifyModelSEIR;
     elseif modelLbl(iModel) == "LV"
-        mdl = specifyModelLV();
+        getModel = @specifyModelLV;
     elseif modelLbl(iModel) == "RAD_PDE"
-        mdl = specifyModelRAD_PDE();
+        getModel = @specifyModelRAD_PDE;
     else
-        fprintf('Warning: model %s not found\n', modelLbl(iModel) )
+        error('Warning: model %s not found\n', modelLbl(iModel) );
     end
    
-    mdl.options.Display = 'off';
+
     parfor iRep = 1:nReps
         fprintf('   rep %i/%i\n', iRep, nReps)
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Generate data from forward model
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+       % rng(iRep*1000+421);
+         
+        mdl = getModel(varyParamsFlag);     % if varyParamsFlag == 0 this will always return the same values in mdl.ThetaTrue, if varyParamsFlag == 1 it will return different mdl.ThetaTrue for each rep
+        mdl.options.Display = 'off';
         par = mdl.getPar(mdl.ThetaTrue);
         sol = mdl.solveModel(par);
         obs = genObs(sol.eObs, par);
@@ -122,6 +127,12 @@ end
 
 %%
 
+if varyParamsFlag == 0
+    varyLbl = "_fixed";
+else
+    varyLbl = "_varied";
+end
+
 % Plotting (for a single realisation) for each model
 iToPlot = 1;            % realisation number to plot
 for iModel = 1:nModels
@@ -135,7 +146,7 @@ for iModel = 1:nModels
     end
 
     parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
-    plotGraphs(results(iToPlot, iModel), parsToProfile, mdl, modelLbl(iModel), savFolder, iModel);
+    plotGraphs(results(iToPlot, iModel), parsToProfile, mdl, modelLbl(iModel)+paramLbl, savFolder, iModel);
 end
 
 % Create output table and write latex table
@@ -145,11 +156,11 @@ repNumber = (1:nReps)';
 outTab = table(repNumber, relErrBasic, relErrImproved, nCallsMLE_basic, nCallsProfile_basic, totCallsBasic, nCallsMLE_improved, nCallsProfile_improved, totCallsImproved);
 
 % Write latex for results table
-writeLatex(outTab, modelLong, savFolder+fNameTex);
+writeLatex(outTab, modelLong, savFolder+fNameTex+varyLbl+".tex");
 
 
 % Save results
-save(savFolder+fNameOut);
+save(savFolder+fNameOut+varyLbl+".mat");
 
 
 

@@ -1,4 +1,4 @@
-function mdl = specifyModelLV()
+function mdl = specifyModelLV(varyParamsFlag)
 
 % Functions defining LV model and parameter ranges and initial conditions for MLE
 mdl.getPar = @getParLV;
@@ -12,6 +12,9 @@ mdl.yLbl = 'observed population count';
 % Specify true values of parameters to be fitted
 mdl.parLbl = ["r", "a", "mu", "p_{obs}"];
 mdl.ThetaTrue = [1; 1.5; 1; 0.1];
+if varyParamsFlag == 1      % add some (Gaussian) noise to parameter values
+    mdl.ThetaTrue = mdl.ThetaTrue + [0.2; 0.2; 0.2; 0.02].*randn(4, 1);
+end
 
 % Indices and values of parameters in parLbl to optimise without re-evaluating forward model in the improved method
 mdl.parsToOptimise = 4;
@@ -23,6 +26,7 @@ mdl.Theta0 = [0.95; 1.45; 0.9; 0.11];
 % Define lower and upper bounds on fitted parameters
 mdl.lb = [1e-3; 1e-3; 1e-3; 1e-4];
 mdl.ub = [10; 10; 5; 1];
+mdl.ThetaTrue = max(mdl.lb, min(mdl.ub, mdl.ThetaTrue) );       % force true parameter values to be within specified bounds
 
 % Profile intervals for each parameter
 mdl.profileRange = 0.2;
