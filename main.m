@@ -67,7 +67,6 @@ for iModel = 1:nModels
        % rng(iRep*1000+421);
          
         mdl = getModel(varyParamsFlag);     % if varyParamsFlag == 0 this will always return the same values in mdl.ThetaTrue, if varyParamsFlag == 1 it will return different mdl.ThetaTrue for each rep
-        mdl.options.Display = 'off';
         par = mdl.getPar(mdl.ThetaTrue);
         sol = mdl.solveModel(par);
         obs = genObs(sol.eObs, par);
@@ -106,11 +105,13 @@ for iModel = 1:nModels
         results(iRep, iModel).ThetaMLE = ThetaMLE;
         results(iRep, iModel).ThetaProfile = ThetaProfile;
         results(iRep, iModel).logLik = logLik;
+        results(iRep, iModel).logLikNorm = logLik - max(logLik, [], 2);
         results(iRep, iModel).solMLEImproved = solMLEImproved;
         results(iRep, iModel).ThetaMLEImproved = ThetaMLEImproved;
         results(iRep, iModel).ThetaProfileImproved = ThetaProfileImproved;
         results(iRep, iModel).logLikImproved = logLikImproved;
-    
+        results(iRep, iModel).logLikImprovedNorm = logLikImproved - max(logLikImproved, [], 2);
+
         % Record some summary statistics for this model
         nCallsMLE_basic(iRep, iModel) = countMLE;
         nCallsProfile_basic(iRep, iModel) = sum(countProfile);

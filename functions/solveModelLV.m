@@ -5,8 +5,11 @@ tSpan = 0:1:par.tMax;
 % Set initial condition
 IC = par.y0;
 
+% Set ODE solver options to specify non-negative solutions are required
+options = odeset('NonNegative', ones(size(IC)));
+
 % Solve ODE
-[t, Y] = ode45(@(t, x)odesLV(t, x, par), tSpan, IC);
+[t, Y] = ode45(@(t, x)odesLV(t, x, par), tSpan, IC, options);
 
 % If ODE solution terminates before tMax (because of numerical problems), pad solution with Y=infinity 
 if t(end) < par.tMax

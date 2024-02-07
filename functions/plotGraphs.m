@@ -11,11 +11,11 @@ obs = results.obs;
 solMLE = results.solMLE;
 ThetaMLE = results.ThetaMLE;
 ThetaProfile = results.ThetaProfile;
-logLik = results.logLik;
+logLikNorm = results.logLikNorm;
 solMLEImproved = results.solMLEImproved;
 ThetaMLEImproved = results.ThetaMLEImproved;
 ThetaProfileImproved = results.ThetaProfileImproved;
-logLikImproved = results.logLikImproved;
+logLikImprovedNorm = results.logLikImprovedNorm;
 
 
 h = figure(2*(iCall-1)+1);
@@ -82,11 +82,11 @@ nPars = length(ThetaMLE);      % number of parameters to profile
 legendDoneFlag = 0;
 for iPar = 1:nPars
     subplot(ceil(nPars/2), 2, iPar)
-    plot(ThetaProfile(iPar, :), logLik(iPar, :))
+    plot(ThetaProfile(iPar, :), logLikNorm(iPar, :))
     hold on
     ind = find(parsToProfile == iPar);
     if ~isempty(ind)
-        plot(ThetaProfileImproved(ind, :), logLikImproved(ind, :))
+        plot(ThetaProfileImproved(ind, :), logLikImprovedNorm(ind, :))
     end
     xline(ThetaMLE(iPar), 'b--');
     if ~isempty(ind)
