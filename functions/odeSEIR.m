@@ -1,5 +1,7 @@
 function dydt = odeSEIR(t, y, par)
 
+big = 1e6;
+
 S = y(1);                       % susceptible
 E = y(2);                       % exposed
 I = y(3);                       % infectious
@@ -20,4 +22,8 @@ dC1dt = par.pObs * par.Gamma * E  -  par.obsRate * C1;
 dC2dt = par.obsRate * C1;
 
 dydt = [dSdt; dEdt; dIdt; dR1dt; dC1dt; dC2dt];
+
+% To prevent variables from becoming negative:
+negFlag = y < 0;
+dydt(negFlag) = -big*y(negFlag);
 

@@ -38,7 +38,9 @@ end
 
 
 if validStartFlag
-    [PhiOpt, f] = fmincon(objFn, x0, [], [], [], [], mdl.lb(mdl.parsToOptimise), mdl.ub(mdl.parsToOptimise), [], mdl.options);           
+    opts = mdl.options;
+    opts.Display = 'off';
+    [PhiOpt, f] = fmincon(objFn, x0, [], [], [], [], mdl.lb(mdl.parsToOptimise), mdl.ub(mdl.parsToOptimise), [], opts);           
     LL = -f;        % f is negative log likelihood so return -f
 else
     LL = -inf;

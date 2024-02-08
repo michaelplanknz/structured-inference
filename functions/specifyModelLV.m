@@ -36,6 +36,6 @@ mdl.profileRange = 0.2;
 mdl.gridSearchFlag = 1;     % set to 1 to do a preliminary grid search of the optimised parameter if the default starting value returns Nan
 
 % Set fmincon options if required:
-mdl.options = optimoptions(@fmincon, 'Display', 'off', 'Algorithm', 'sqp');
+mdl.options = optimoptions(@fmincon, 'Display', 'off');
 
 
