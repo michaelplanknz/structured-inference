@@ -13,7 +13,7 @@ C20 = 0;                 % observed (cumulative)
 IC = [S0; E0; I0; R10; C10; C20];
 
 % Set ODE solver options to specify non-negative solutions are required
-options = odeset('NonNegative', ones(size(IC)), options);
+options = odeset('NonNegative', ones(size(IC)));
 
 % Solve ODE
 [t, Y] = ode45(@(t, x)odeSEIR(t, x, par), tSpan, IC);

@@ -24,7 +24,8 @@ varyParamsFlag = 1;    % If set to 0, each rep will regenerate data using the *s
 
 modelLbl = ["LV", "SEIR", "RAD_PDE"]';                      % labels for models - can include "LV", "SEIR", "RAD_PDE"
 modelLong = ["Predator-prey", "SEIR", "Adv. diff."]';       % labels to use in latex tables
-
+% modelLbl = "SEIR";
+% modelLong = modelLbl;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -139,15 +140,15 @@ iToPlot = 1;            % realisation number to plot
 for iModel = 1:nModels
     % Specify model-specific functions and values here:
     if modelLbl(iModel) == "SEIR"
-        mdl = specifyModelSEIR();
+        mdl = specifyModelSEIR(0);
     elseif modelLbl(iModel) == "LV"
-        mdl = specifyModelLV();
+        mdl = specifyModelLV(0);
     elseif modelLbl(iModel) == "RAD_PDE"
-        mdl = specifyModelRAD_PDE();
+        mdl = specifyModelRAD_PDE(0);
     end
 
     parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
-    plotGraphs(results(iToPlot, iModel), parsToProfile, mdl, modelLbl(iModel)+paramLbl, savFolder, iModel);
+    plotGraphs(results(iToPlot, iModel), parsToProfile, mdl, modelLbl(iModel)+varyLbl, savFolder, iModel);
 end
 
 % Create output table and write latex table

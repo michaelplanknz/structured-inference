@@ -38,8 +38,7 @@ end
 
 
 if validStartFlag
-    opts = mdl.options;
-    opts.Display = 'off';
+    opts = optimoptions(@fmincon, 'Display', 'off');
     [PhiOpt, f] = fmincon(objFn, x0, [], [], [], [], mdl.lb(mdl.parsToOptimise), mdl.ub(mdl.parsToOptimise), [], opts);           
     LL = -f;        % f is negative log likelihood so return -f
 else
