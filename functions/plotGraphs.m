@@ -4,6 +4,7 @@ function plotGraphs(results, parsToProfile, mdl, savLbl, savFolder, iCall)
 if isfield(results, 'sol')
     trueSolFlag = 1;        % flag indicating whether the results structure contains the true solution or not
     sol = results.sol;
+    ThetaTrue = results.ThetaTrue;
 else
     trueSolFlag = 0;
 end
@@ -93,13 +94,13 @@ for iPar = 1:nPars
         xline(ThetaMLEImproved(iPar), 'r--');
     end
     if trueSolFlag
-        xline(mdl.ThetaTrue(iPar), 'k--');
+        xline(ThetaTrue(iPar), 'k--');
     end
     if ~isempty(ind) & legendDoneFlag == 0
        if trueSolFlag
-          legend('profile likelihood (basic)', 'profile likelihood (structured)', 'MLE (basic)', 'MLE (structured)', 'actual')
+          legend('profile (basic)', 'profile (structured)', 'MLE (basic)', 'MLE (structured)', 'actual')
        else
-          legend('profile likelihood (basic)', 'profile likelihood (structured)', 'MLE (basic)', 'MLE (structured)')
+          legend('profile (basic)', 'profile (structured)', 'MLE (basic)', 'MLE (structured)')
        end
        legendDoneFlag = 1;
     end

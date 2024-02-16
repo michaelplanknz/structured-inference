@@ -1,6 +1,6 @@
 function writeLatex(outTab, modelLbl, fName)
 
-qt = [0.25, 0.5, 0.75];
+qt = [0.25; 0.5; 0.75];
 
 % For each statistic of interest, create an m x n array whose m rows are the m quantile points specified in qt and whose n columns are the n different models
 relErrBasic = 100*quantile(outTab.relErrBasic, qt);

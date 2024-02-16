@@ -39,10 +39,14 @@ end
 
 if validStartFlag
     opts = optimoptions(@fmincon, 'Display', 'off');
-    [PhiOpt, f] = fmincon(objFn, x0, [], [], [], [], mdl.lb(mdl.parsToOptimise), mdl.ub(mdl.parsToOptimise), [], opts);           
+    [PhiOpt, f, exitFlag] = fmincon(objFn, x0, [], [], [], [], mdl.lb(mdl.parsToOptimise), mdl.ub(mdl.parsToOptimise), [], opts);           
     LL = -f;        % f is negative log likelihood so return -f
+    if exitFlag <= 0
+        fprintf('Warning in calcLogLikImproved.m: fmincon failed to converge to a local minimum (exitFlag = %i)\n', exitFlag)
+    end
 else
     LL = -inf;
+    fprintf('Warning in calcLogLikImproved: unable to find feasible start point for fmincon\n')
 end
 
 

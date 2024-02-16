@@ -3,13 +3,13 @@ function par = getParLV(Theta);
 par.tMax = 100;        % simulation time 
 
 % Initial conditions
-par.y0 = [100; 100];
+par.y0 = [500; 500];
 
 % Model parameters
 par.r = Theta(1);
-par.K = 1000;
+par.K = 5000;
 par.a = Theta(2);
-par.b = 200;
+par.b = 1000;
 par.mu = Theta(3);
 
 % Observation parameters

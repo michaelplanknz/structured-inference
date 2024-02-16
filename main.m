@@ -24,7 +24,7 @@ varyParamsFlag = 1;    % If set to 0, each rep will regenerate data using the *s
 
 modelLbl = ["LV", "SEIR", "RAD_PDE"]';                      % labels for models - can include "LV", "SEIR", "RAD_PDE"
 modelLong = ["Predator-prey", "SEIR", "Adv. diff."]';       % labels to use in latex tables
-% modelLbl = "SEIR";
+% modelLbl = "LV";
 % modelLong = modelLbl;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,10 +80,10 @@ for iModel = 1:nModels
         
         % MLE
 
-        [ThetaMLE, parMLE, solMLE, countMLE] = doMLE(mdl, obs);
+        [ThetaMLE, parMLE, solMLE, LLMLE, countMLE] = doMLE(mdl, obs);
         
         % Profiling
-        [ThetaProfile, logLik, countProfile] = doProfiling(mdl, obs, ThetaMLE, nMesh);
+        [ThetaProfile, logLik, countProfile] = doProfiling(mdl, obs, ThetaMLE, LLMLE, nMesh);
         
            
         
@@ -94,20 +94,23 @@ for iModel = 1:nModels
         
         
         % MLE
-        [ThetaMLEImproved, parMLEImproved, solMLEImproved, countMLEImproved] = doMLEImproved(mdl, obs);
+        [ThetaMLEImproved, parMLEImproved, solMLEImproved, LLMLEImproved, countMLEImproved] = doMLEImproved(mdl, obs);
         
         % Profiling    
-        [ThetaProfileImproved, logLikImproved, countProfileImproved] = doProfilingImproved(mdl, obs, ThetaMLEImproved, nMesh);
+        [ThetaProfileImproved, logLikImproved, countProfileImproved] = doProfilingImproved(mdl, obs, ThetaMLEImproved, LLMLEImproved, nMesh);
         
         % Store results from this realisation in a structure array
+        results(iRep, iModel).ThetaTrue = mdl.ThetaTrue;
         results(iRep, iModel).sol = sol;
         results(iRep, iModel).obs = obs;
         results(iRep, iModel).solMLE = solMLE;
+        results(iRep, iModel).LLMLE = LLMLE;
         results(iRep, iModel).ThetaMLE = ThetaMLE;
         results(iRep, iModel).ThetaProfile = ThetaProfile;
         results(iRep, iModel).logLik = logLik;
         results(iRep, iModel).logLikNorm = logLik - max(logLik, [], 2);
         results(iRep, iModel).solMLEImproved = solMLEImproved;
+        results(iRep, iModel).LLMLEImproved = LLMLEImproved;
         results(iRep, iModel).ThetaMLEImproved = ThetaMLEImproved;
         results(iRep, iModel).ThetaProfileImproved = ThetaProfileImproved;
         results(iRep, iModel).logLikImproved = logLikImproved;
@@ -121,6 +124,16 @@ for iModel = 1:nModels
         relErrBasic(iRep, iModel) = norm(ThetaMLE-mdl.ThetaTrue)/norm(mdl.ThetaTrue);
         relErrImproved(iRep, iModel) = norm(ThetaMLEImproved-mdl.ThetaTrue)/norm(mdl.ThetaTrue);
         
+    end
+
+    % To check coveragem evaluate the likelihood function for the 1st rep
+    % at the MLE from the other reps
+    mdl = getModel(0); 
+    for iRep = 2:nReps
+        par = mdl.getPar(results(iRep, iModel).ThetaMLE);
+        results(iRep, iModel).LL1 = LLfunc( results(iRep, iModel).solMLE.eObs, results(1, iModel).obs, par);
+        par = mdl.getPar(results(iRep, iModel).ThetaMLEImproved);
+        results(iRep, iModel).LL1Improved = LLfunc( results(iRep, iModel).solMLEImproved.eObs, results(1, iModel).obs, par);
     end
 end
 

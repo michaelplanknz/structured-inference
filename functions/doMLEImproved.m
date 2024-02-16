@@ -1,4 +1,4 @@
-function [ThetaMLEImproved, parMLEImproved, solMLEImproved, countMLEImproved] = doMLEImproved(mdl, obs)
+function [ThetaMLEImproved, parMLEImproved, solMLEImproved, LLMLEImproved, countMLEImproved] = doMLEImproved(mdl, obs)
 
 
 % Indices of remianing parameters in parLbl to profile
@@ -8,15 +8,24 @@ parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
 % Deine objective function for optimisation
 objFn = @(Theta_contracted)(-calcLogLikImproved(mdl, obs, Theta_contracted));
 
-% Local search starting from Theta0...
-[ThetaMLE_contracted, ~, ~, output] = fmincon( objFn, mdl.Theta0(parsToProfile), [], [], [], [], mdl.lb(parsToProfile), mdl.ub(parsToProfile), [], mdl.options );
+if mdl.GSFlag == 0
+    % Local search starting from Theta0...
+    [ThetaMLE_contracted, f, exitFlag, output] = fmincon( objFn, mdl.Theta0(parsToProfile), [], [], [], [], mdl.lb(parsToProfile), mdl.ub(parsToProfile), [], mdl.options );
+    if exitFlag <= 0
+        fprintf('Warning in doMLEImproved: fmincon failed to converge to a local minimum (exitFlag = %i)\n', exitFlag)
+    end
+else
+    gs = GlobalSearch;
+    gs.MaxTime = mdl.GSMaxTime;
+    gs.Display = 'iter';
+    problem = createOptimProblem('fmincon', 'x0', mdl.Theta0(parsToProfile), 'objective', objFn, 'lb', mdl.lb(parsToProfile), 'ub', mdl.ub(parsToProfile), 'options', mdl.options);
+    [ThetaMLE_contracted, f, exitFlag, output, gsSolns]  = run(gs, problem);
+    if exitFlag <= 0
+        fprintf('Warning in doMLImprovedE: GS failed to converge to a local minimum (exitFlag = %i)\n', exitFlag)
+    end
+end
 
-% gs = GlobalSearch;
-% gs.MaxTime = mdl.GSMaxTime;
-% gs.Display = 'iter';
-% problem = createOptimProblem('fmincon', 'x0', mdl.Theta0(parsToProfile), 'objective', objFn, 'lb', mdl.lb(parsToProfile), 'ub', mdl.ub(parsToProfile), 'options', mdl.options);
-% [ThetaMLE_contracted, ~, ~, output, gsSolns]  = run(gs, problem);
-
+LLMLEImproved = -f;
 countMLEImproved = output.funcCount;
 
 % Post-calculate optimal value of parameter(s) to be optimised
