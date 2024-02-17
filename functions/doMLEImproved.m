@@ -15,11 +15,8 @@ if mdl.GSFlag == 0
         fprintf('Warning in doMLEImproved: fmincon failed to converge to a local minimum (exitFlag = %i)\n', exitFlag)
     end
 else
-    gs = GlobalSearch;
-    gs.MaxTime = mdl.GSMaxTime;
-    gs.Display = 'iter';
     problem = createOptimProblem('fmincon', 'x0', mdl.Theta0(parsToProfile), 'objective', objFn, 'lb', mdl.lb(parsToProfile), 'ub', mdl.ub(parsToProfile), 'options', mdl.options);
-    [ThetaMLE_contracted, f, exitFlag, output, gsSolns]  = run(gs, problem);
+    [ThetaMLE_contracted, f, exitFlag, output, gsSolns]  = run(mdl.gs, problem);
     if exitFlag <= 0
         fprintf('Warning in doMLImprovedE: GS failed to converge to a local minimum (exitFlag = %i)\n', exitFlag)
     end

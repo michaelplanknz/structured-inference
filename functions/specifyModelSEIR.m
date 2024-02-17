@@ -39,7 +39,7 @@ mdl.ThetaTrue = max(mdl.lb, min(mdl.ub, mdl.ThetaTrue) );       % force true par
 
 % Profile intervals for each parameter - profile range will be from
 % (1-x)*MLE to (1+x)*MLE
-mdl.profileRange = [0.0025, 0.005, 0.02, 0.1];
+mdl.profileRange = [0.005, 0.01, 0.04, 0.2];
 
 mdl.gridSearchFlag = 1;     % set to 1 to do a preliminary grid search of the optimised parameter if the default starting value returns Nan
 
@@ -49,6 +49,6 @@ mdl.options = optimoptions(@fmincon, 'Display', 'off');
 
 % Set GSFlag to 1 to do a global search for the MLE, or 0 to do a local
 % search (fmincon only):
-mdl.GSFlag = 0;     
-mdl.GSMaxTime = 1000;        % max time allowed for global search (if set)
+mdl.GSFlag = (varyParamsFlag == 1);                             % set GS option only if do a parameter variation run     
+mdl.gs = GlobalSearch(Display = "off", MaxTime = 1000);     % set GS options (if required)
 

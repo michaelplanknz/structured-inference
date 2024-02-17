@@ -11,11 +11,8 @@ if mdl.GSFlag == 0
     end
 else
     % Global search
-    gs = GlobalSearch;
-    gs.MaxTime = mdl.GSMaxTime;
-    gs.Display = 'iter';
     problem = createOptimProblem('fmincon', 'x0', mdl.Theta0, 'objective', objFn,'lb', mdl.lb, 'ub', mdl.ub, 'options', mdl.options);
-    [ThetaMLE, f, exitFlag, output, gsSolns]  = run(gs, problem);
+    [ThetaMLE, f, exitFlag, output, gsSolns]  = run(mdl.gs, problem);
     if exitFlag <= 0
         fprintf('Warning in doMLE: GS failed to converge to a local minimum (exitFlag = %i)\n', exitFlag)
     end

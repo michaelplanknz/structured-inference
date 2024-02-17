@@ -19,7 +19,7 @@ fNameTex = "table";
 % Global numerical settings
 nReps = 100;    % number of independently generated data sets to analyse for each model
 nMesh = 21;     % number of points in parameter mesh for profiles
-thresholdValue = 2;
+Alpha = 0.05;   % significance level for calculating CIs
 
 varyParamsFlag = 1;    % If set to 0, each rep will regenerate data using the *same* model parameters; if set                                                   to 1, each rep will randomly draw target parameter values and then regenerate data
 
@@ -43,10 +43,10 @@ nCallsProfile_improved = zeros(nReps, nModels);
 relErrBasic = zeros(nReps, nModels);
 relErrImproved = zeros(nReps, nModels);
 
+thresholdValue = -0.5*chi2inv(1-Alpha, 1);
 
 for iModel = 1:nModels
     fprintf('\nModel %s\n', modelLbl(iModel))
-
 
     % Specify the model-specific functions here:
     if modelLbl(iModel) == "SEIR"

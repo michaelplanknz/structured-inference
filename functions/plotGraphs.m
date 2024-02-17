@@ -97,7 +97,7 @@ for iPar = 1:nPars
         xline(ThetaTrue(iPar), 'k--');
     end
     if isfinite(threshold)
-        yline(-threshold, 'k:')
+        yline(threshold, 'k:')
     end
     if ~isempty(ind) & legendDoneFlag == 0
        if trueSolFlag
