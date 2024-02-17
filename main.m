@@ -19,6 +19,7 @@ fNameTex = "table";
 % Global numerical settings
 nReps = 100;    % number of independently generated data sets to analyse for each model
 nMesh = 21;     % number of points in parameter mesh for profiles
+thresholdValue = 2;
 
 varyParamsFlag = 1;    % If set to 0, each rep will regenerate data using the *same* model parameters; if set                                                   to 1, each rep will randomly draw target parameter values and then regenerate data
 
@@ -83,8 +84,11 @@ for iModel = 1:nModels
         [ThetaMLE, parMLE, solMLE, LLMLE, countMLE] = doMLE(mdl, obs);
         
         % Profiling
-        [ThetaProfile, logLik, countProfile] = doProfiling(mdl, obs, ThetaMLE, LLMLE, nMesh);
-        
+       [ThetaProfile, logLik, countProfile] = doProfiling(mdl, obs, ThetaMLE, LLMLE, nMesh);
+       logLikNorm = logLik - max(logLik, [], 2);
+
+       % Calculate CIs from profile results
+        CIs = findCIs(ThetaProfile, logLikNorm, thresholdValue);
            
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -98,6 +102,10 @@ for iModel = 1:nModels
         
         % Profiling    
         [ThetaProfileImproved, logLikImproved, countProfileImproved] = doProfilingImproved(mdl, obs, ThetaMLEImproved, LLMLEImproved, nMesh);
+        logLikNormImproved = logLikImproved - max(logLikImproved, [], 2);
+
+        % Calculate CIs from profile results
+        CIsImproved = findCIs(ThetaProfileImproved, logLikNormImproved, thresholdValue);
         
         % Store results from this realisation in a structure array
         results(iRep, iModel).ThetaTrue = mdl.ThetaTrue;
@@ -108,13 +116,19 @@ for iModel = 1:nModels
         results(iRep, iModel).ThetaMLE = ThetaMLE;
         results(iRep, iModel).ThetaProfile = ThetaProfile;
         results(iRep, iModel).logLik = logLik;
-        results(iRep, iModel).logLikNorm = logLik - max(logLik, [], 2);
+        results(iRep, iModel).logLikNorm = logLikNorm;
+        results(iRep, iModel).CIs = CIs;
+        results(iRep, iModel).covFlag = mdl.ThetaTrue >= CIs(:, 1) & mdl.ThetaTrue <= CIs(:, 2);
         results(iRep, iModel).solMLEImproved = solMLEImproved;
         results(iRep, iModel).LLMLEImproved = LLMLEImproved;
         results(iRep, iModel).ThetaMLEImproved = ThetaMLEImproved;
         results(iRep, iModel).ThetaProfileImproved = ThetaProfileImproved;
         results(iRep, iModel).logLikImproved = logLikImproved;
         results(iRep, iModel).logLikImprovedNorm = logLikImproved - max(logLikImproved, [], 2);
+        results(iRep, iModel).CIsImproved = CIsImproved;
+        parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
+        results(iRep, iModel).covFlagImproved = mdl.ThetaTrue(parsToProfile) >= CIsImproved(:, 1) & mdl.ThetaTrue(parsToProfile) <= CIsImproved(:, 2);
+
 
         % Record some summary statistics for this model
         nCallsMLE_basic(iRep, iModel) = countMLE;
@@ -126,7 +140,7 @@ for iModel = 1:nModels
         
     end
 
-    % To check coveragem evaluate the likelihood function for the 1st rep
+    % To check coverage evaluate the likelihood function for the 1st rep
     % at the MLE from the other reps
     mdl = getModel(0); 
     for iRep = 2:nReps
@@ -141,27 +155,28 @@ end
 
 
 %%
+% Write outputs
 
 if varyParamsFlag == 0
     varyLbl = "_fixed";
 else
-    varyLbl = "_varied";
+    varyLbl = "_varied_fixIC";
 end
 
-% Plotting (for a single realisation) for each model
+% Plotting (a single realisation) for each model
 iToPlot = 1;            % realisation number to plot
 for iModel = 1:nModels
     % Specify model-specific functions and values here:
     if modelLbl(iModel) == "SEIR"
-        mdl = specifyModelSEIR(0);
+        mdl(iModel) = specifyModelSEIR(0);
     elseif modelLbl(iModel) == "LV"
-        mdl = specifyModelLV(0);
+        mdl(iModel) = specifyModelLV(0);
     elseif modelLbl(iModel) == "RAD_PDE"
-        mdl = specifyModelRAD_PDE(0);
+        mdl(iModel) = specifyModelRAD_PDE(0);
     end
 
-    parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
-    plotGraphs(results(iToPlot, iModel), parsToProfile, mdl, modelLbl(iModel)+varyLbl, savFolder, iModel);
+    parsToProfile = setdiff(1:length(mdl(iModel).Theta0), mdl(iModel).parsToOptimise);
+    plotGraphs(results(iToPlot, iModel), parsToProfile, thresholdValue, mdl(iModel), modelLbl(iModel)+varyLbl, savFolder, iModel);
 end
 
 % Create output table and write latex table
@@ -170,9 +185,9 @@ totCallsImproved = nCallsMLE_improved + nCallsProfile_improved;
 repNumber = (1:nReps)';
 outTab = table(repNumber, relErrBasic, relErrImproved, nCallsMLE_basic, nCallsProfile_basic, totCallsBasic, nCallsMLE_improved, nCallsProfile_improved, totCallsImproved);
 
-% Write latex for results table
-writeLatex(outTab, modelLong, savFolder+fNameTex+varyLbl+".tex");
-
+% Write latex for results tables
+writeLatex(outTab, modelLong, savFolder+fNameTex+varyLbl+".tex");                   % main results table
+writeCovLatex(results, mdl, modelLong, savFolder+fNameTex+"_cov"+varyLbl+".tex" );  % coverage statistics table
 
 % Save results
 save(savFolder+fNameOut+varyLbl+".mat");

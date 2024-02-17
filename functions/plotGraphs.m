@@ -1,4 +1,4 @@
-function plotGraphs(results, parsToProfile, mdl, savLbl, savFolder, iCall)
+function plotGraphs(results, parsToProfile, threshold, mdl, savLbl, savFolder, iCall)
 
 % Extract variables from results structure
 if isfield(results, 'sol')
@@ -95,6 +95,9 @@ for iPar = 1:nPars
     end
     if trueSolFlag
         xline(ThetaTrue(iPar), 'k--');
+    end
+    if isfinite(threshold)
+        yline(-threshold, 'k:')
     end
     if ~isempty(ind) & legendDoneFlag == 0
        if trueSolFlag

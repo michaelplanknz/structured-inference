@@ -22,7 +22,7 @@ mdl.Theta0 = [1.25; 0.003; 0.12; 35];
 
 if varyParamsFlag == 1      % add some (Gaussian) noise to parameter values
     mdl.ThetaTrue = mdl.ThetaTrue .* (1 + parameterCV*randn(4, 1)); 
-    mdl.Theta0 = mdl.ThetaTrue .* (1 + ICCV*randn(4, 1));
+  %  mdl.Theta0 = mdl.ThetaTrue .* (1 + ICCV*randn(4, 1));
 end
 
 
@@ -39,7 +39,7 @@ mdl.ThetaTrue = max(mdl.lb, min(mdl.ub, mdl.ThetaTrue) );       % force true par
 
 % Profile intervals for each parameter - profile range will be from
 % (1-x)*MLE to (1+x)*MLE
-mdl.profileRange = [0.005, 0.005, 0.02, 0.1];
+mdl.profileRange = [0.0025, 0.005, 0.02, 0.1];
 
 mdl.gridSearchFlag = 1;     % set to 1 to do a preliminary grid search of the optimised parameter if the default starting value returns Nan
 

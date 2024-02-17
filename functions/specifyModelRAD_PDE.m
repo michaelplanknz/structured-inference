@@ -21,7 +21,7 @@ mdl.Theta0 = [1.1; 0.4; 1.8; 4];
 
 if varyParamsFlag == 1      % add some (Gaussian) noise to parameter values
     mdl.ThetaTrue = mdl.ThetaTrue .* (1 + parameterCV*randn(4, 1)); 
-    mdl.Theta0 = mdl.ThetaTrue .* (1 + ICCV*randn(4, 1));
+   % mdl.Theta0 = mdl.ThetaTrue .* (1 + ICCV*randn(4, 1));
 end
 
 % Indices and values of parameters in parLbl to optimise without re-evaluating forward model in the improved method
