@@ -39,7 +39,8 @@ mdl.ThetaTrue = max(mdl.lb, min(mdl.ub, mdl.ThetaTrue) );       % force true par
 
 % Profile intervals for each parameter - profile range will be from
 % (1-x)*MLE to (1+x)*MLE
-mdl.profileRange = [0.005, 0.01, 0.04, 0.2];
+%mdl.profileRange = [0.005, 0.02, 0.04, 0.2];
+mdl.profileRange = [0.0025, 0.005, 0.02, 0.2];
 
 mdl.gridSearchFlag = 1;     % set to 1 to do a preliminary grid search of the optimised parameter if the default starting value returns Nan
 
