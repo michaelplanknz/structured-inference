@@ -33,12 +33,32 @@ To run the code on a user-supplied model, you need to choose a label for the mod
 - solveModelLABEL.m
 - transformSolutionLABEL.m (if the transformation for the structured method is something other than a linear scaling)
 
-The inputs and outputs that are required for each of these functions are described below.
+The inputs and outputs that are required for each of these functions are described below (see supplied files for an example in each case).
 
 ## specifyModel
 
+Inputs: varyParamsFlag - a flag that equals 0 if fixed parameters are to be used (or model is being fitted to user-supplied data -- see below) or 1 if parameters are to be randomised with each call.
 
+Outputs: mdl - a structure that has specific fields defining model properties.
 
+The required fields of mdl are:
+- getPar - a handle to the function getParLABEL()
+- solveModel - a handle to the function solveModel()
+- transformSolution - handle to a function that transforms a known solution for a reference value of the inner parameter(s) to the solution for any other valid value. If the transformation is a linear scaling, use @transformSolutionMultiply, otherwise a user-supplied transformation function must be provided.
+- xLbl - string for labelling the horizontal axis of graphs of model output.
+- yLbl - string for labelling the vertical axis of graphs of model output.
+- parLbl - string array of labels for the target parameters for inference.
+- ThetaTrue - corresponding array of the true values of the target parameters (or the mean values in the case of parameter randomisation).
+- Theta0 - initial condition for the parameter values to use for the optimisation routine.
+- lb - lower bound for the target parameter values
+- ub - upper bound for the target parameter values
+- profileRange - profile intervals for each parameter will be from (1-profileRange)*M to (1+profileRange)*M where M is the value of that parameter at the MLE.
+- parsToOptimise - indices defining which parameter(s) in mdl.parLbl are inner parameters.
+- runningValues - values of the inner parameter(s) to use when solving the forward model.
+- gridSearchFlag - set to 1 to do a preliminary grid search of the inner parameter if the default starting value returns NaN (only works for a single inner parameter).
+- options - an optimisation options structure for *fmincon* as returned by Matlab's *optimoptions* - default code uses the interior-point algorithm and turns *fmincon* display off.
+- GSFlag - set to 1 to do a global search for the MLE or 0 to do a local search (i.e. *fmincon* only).
+- gs - (if GSFlag is set to 1) a GlobalSearch object as returned by Matlab's *GlobalSearch* - default code specifies a maximum time of 1000 seconds and turns *GlobalSearch* display off.
 
 
 
