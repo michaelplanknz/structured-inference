@@ -61,7 +61,18 @@ The required fields of mdl are:
 - GSFlag - set to 1 to do a global search for the MLE or 0 to do a local search (i.e. *fmincon* only).
 - gs - (if GSFlag is set to 1) a GlobalSearch object as returned by Matlab's *GlobalSearch* - default code specifies a maximum time of 1000 seconds and turns *GlobalSearch* display off.
 
+## getPar
 
+**Inputs:** Theta - a vector of values for the *target* parameters specified in the *specifyModel* function.
+
+**Outputs:** par - a structure that has fields providing values of all parameters of the forward model and the noise model.
+
+Note: *getPar* should copy the values in the input vector Theta into the appropiate fields of the output structure par (see supplied code for examples).
+
+The required fields of par are:
+- Any fields that are accessed by *solveModel* in order to solve the forward model.
+- noiseModel - a string specifying the noise model to use. This can be one of the built-in noise models: Gaussian with constant std. dev. given by par.obsSD ("norm_SD_const"); Gaussian with std. dev. proportional to the mean, with constant of proportionaltity par.obsSD ("norm_SD_propMean"); Poisson ("poisson"); negative binomial with disperson factor given by par.obsK. Note if either of the Gaussian noise models are selected, par should contain a field obsIntFlag, which if set to 1 means observations are rounded to the nearest integer. Alternatively, you may specify a different noise model by adding the relevant likelihood function to *LLfunc* in terms of vectors representing the expected and observed data, and the relevant noise generation process to *genObs*. 
+- Any noise-related fields that are accessed by the likelihood function *LLfunc* or the noise generation functoin *genObs* (see previous point).
 
 
 
