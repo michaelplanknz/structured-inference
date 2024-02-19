@@ -44,6 +44,7 @@ nCallsProfile_Structured = zeros(nReps, nModels);
 relErrBasic = zeros(nReps, nModels);
 relErrStructured = zeros(nReps, nModels);
 
+% Threshold value on normalised log likelihood for (1-Alpha)% confidence intervals 
 thresholdValue = -0.5*chi2inv(1-Alpha, 1);
 
 for iModel = 1:nModels
@@ -86,7 +87,7 @@ for iModel = 1:nModels
         
         % Profiling
        [ThetaProfile, logLik, countProfile] = doProfiling(mdl, obs, ThetaMLE, LLMLE, nMesh);
-       logLikNorm = logLik - max(logLik, [], 2);
+       logLikNorm = logLik - LLMLE;
 
        % Calculate CIs from profile results
         CIs = findCIs(ThetaProfile, logLikNorm, thresholdValue);
@@ -103,7 +104,7 @@ for iModel = 1:nModels
         
         % Profiling    
         [ThetaProfileStructured, logLikStructured, countProfileStructured] = doProfilingStructured(mdl, obs, ThetaMLEStructured, LLMLEStructured, nMesh);
-        logLikNormStructured = logLikStructured - max(logLikStructured, [], 2);
+        logLikStructuredNorm = logLikStructured - LLMLEStructured;
 
         % Calculate CIs from profile results
         CIsStructured = findCIs(ThetaProfileStructured, logLikNormStructured, thresholdValue);
@@ -125,7 +126,7 @@ for iModel = 1:nModels
         results(iRep, iModel).ThetaMLEStructured = ThetaMLEStructured;
         results(iRep, iModel).ThetaProfileStructured = ThetaProfileStructured;
         results(iRep, iModel).logLikStructured = logLikStructured;
-        results(iRep, iModel).logLikStructuredNorm = logLikStructured - max(logLikStructured, [], 2);
+        results(iRep, iModel).logLikStructuredNorm = logLikStructuredNorm;
         results(iRep, iModel).CIsStructured = CIsStructured;
         parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
         results(iRep, iModel).covFlagStructured = mdl.ThetaTrue(parsToProfile) >= CIsStructured(:, 1) & mdl.ThetaTrue(parsToProfile) <= CIsStructured(:, 2);

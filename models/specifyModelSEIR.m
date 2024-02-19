@@ -46,7 +46,6 @@ mdl.gridSearchFlag = 1;     % set to 1 to do a preliminary grid search of the op
 
 % Set fmincon options (for outer problem) if required:
 mdl.options = optimoptions(@fmincon, 'Display', 'off');
-%mdl.options = optimoptions(@fmincon, 'Display', 'off', 'Algorithm', 'sqp');
 
 % Set GSFlag to 1 to do a global search for the MLE, or 0 to do a local
 % search (fmincon only):
