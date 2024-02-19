@@ -13,10 +13,10 @@ solMLE = results.solMLE;
 ThetaMLE = results.ThetaMLE;
 ThetaProfile = results.ThetaProfile;
 logLikNorm = results.logLikNorm;
-solMLEImproved = results.solMLEImproved;
-ThetaMLEImproved = results.ThetaMLEImproved;
-ThetaProfileImproved = results.ThetaProfileImproved;
-logLikImprovedNorm = results.logLikImprovedNorm;
+solMLEStructured = results.solMLEStructured;
+ThetaMLEStructured = results.ThetaMLEStructured;
+ThetaProfileStructured = results.ThetaProfileStructured;
+logLikStructuredNorm = results.logLikStructuredNorm;
 
 
 h = figure(2*(iCall-1)+1);
@@ -61,12 +61,12 @@ if trueSolFlag
     set(gca, 'ColorOrderIndex', 1)
     pl1 = plot(sol.xPlot, sol.eObs, '-');
     set(gca, 'ColorOrderIndex', 1)
-    pl2 = plot(solMLEImproved.xPlot, solMLEImproved.eObs, '--');
+    pl2 = plot(solMLEStructured.xPlot, solMLEStructured.eObs, '--');
 else
     pl3 = plot(solMLE.xPlot, obs, '.' );
     hold on
     set(gca, 'ColorOrderIndex', 1)
-    pl2 = plot(solMLEImproved.xPlot, solMLEImproved.eObs, '--');
+    pl2 = plot(solMLEStructured.xPlot, solMLEStructured.eObs, '--');
 end
 xlabel(mdl.xLbl)
 ylabel(mdl.yLbl)
@@ -87,11 +87,11 @@ for iPar = 1:nPars
     hold on
     ind = find(parsToProfile == iPar);
     if ~isempty(ind)
-        plot(ThetaProfileImproved(ind, :), logLikImprovedNorm(ind, :))
+        plot(ThetaProfileStructured(ind, :), logLikStructuredNorm(ind, :))
     end
     xline(ThetaMLE(iPar), 'b--');
     if ~isempty(ind)
-        xline(ThetaMLEImproved(iPar), 'r--');
+        xline(ThetaMLEStructured(iPar), 'r--');
     end
     if trueSolFlag
         xline(ThetaTrue(iPar), 'k--');

@@ -1,4 +1,4 @@
-function [LL, PhiOpt] = calcLogLikImproved(mdl, obs, Theta_contracted)
+function [LL, PhiOpt] = calcLogLikStructured(mdl, obs, Theta_contracted)
 
 % Calculate log likelihood of observed data obs under parameters Theta
 % par is the structrue containing all model parameters
@@ -13,7 +13,7 @@ Theta = makeTheta(mdl.runningValues, Theta_contracted, mdl.parsToOptimise);
 % Construct a modified parameter structure by overwriting the default settings with the specified values of Theta
 par = mdl.getPar(Theta);
 
-% Solve forward model (with pObs = 1 or equivalent modification made by getTrialParImproved)
+% Solve forward model (with pObs = 1 or equivalent modification made by getTrialParStructured)
 sol = mdl.solveModel(par); 
 
 % Find optimal Phi (representing e.g. pObs) and associated log likelihood, starting from initial guess pObs = 0.5
@@ -42,11 +42,11 @@ if validStartFlag
     [PhiOpt, f, exitFlag] = fmincon(objFn, x0, [], [], [], [], mdl.lb(mdl.parsToOptimise), mdl.ub(mdl.parsToOptimise), [], opts);           
     LL = -f;        % f is negative log likelihood so return -f
     if exitFlag <= 0
-        fprintf('Warning in calcLogLikImproved.m: fmincon failed to converge to a local minimum (exitFlag = %i)\n', exitFlag)
+        fprintf('Warning in calcLogLikStructured.m: fmincon failed to converge to a local minimum (exitFlag = %i)\n', exitFlag)
     end
 else
     LL = -inf;
-    fprintf('Warning in calcLogLikImproved: unable to find feasible start point for fmincon\n')
+    fprintf('Warning in calcLogLikStructured: unable to find feasible start point for fmincon\n')
 end
 
 

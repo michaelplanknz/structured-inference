@@ -38,10 +38,10 @@ nModels = length(modelLbl);
 
 nCallsMLE_basic = zeros(nReps, nModels);
 nCallsProfile_basic = zeros(nReps, nModels);
-nCallsMLE_improved = zeros(nReps, nModels);
-nCallsProfile_improved = zeros(nReps, nModels);
+nCallsMLE_Structured = zeros(nReps, nModels);
+nCallsProfile_Structured = zeros(nReps, nModels);
 relErrBasic = zeros(nReps, nModels);
-relErrImproved = zeros(nReps, nModels);
+relErrStructured = zeros(nReps, nModels);
 
 thresholdValue = -0.5*chi2inv(1-Alpha, 1);
 
@@ -93,19 +93,19 @@ for iModel = 1:nModels
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Find MLE and profile each (non-optimised) parameter with structured inference method
-        % NB variables with 'Improved" suffix relate to output from the structured inference method as opposed to the basic method
+        % NB variables with 'Structured" suffix relate to output from the structured inference method as opposed to the basic method
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         
         % MLE
-        [ThetaMLEImproved, parMLEImproved, solMLEImproved, LLMLEImproved, countMLEImproved] = doMLEImproved(mdl, obs);
+        [ThetaMLEStructured, parMLEStructured, solMLEStructured, LLMLEStructured, countMLEStructured] = doMLEStructured(mdl, obs);
         
         % Profiling    
-        [ThetaProfileImproved, logLikImproved, countProfileImproved] = doProfilingImproved(mdl, obs, ThetaMLEImproved, LLMLEImproved, nMesh);
-        logLikNormImproved = logLikImproved - max(logLikImproved, [], 2);
+        [ThetaProfileStructured, logLikStructured, countProfileStructured] = doProfilingStructured(mdl, obs, ThetaMLEStructured, LLMLEStructured, nMesh);
+        logLikNormStructured = logLikStructured - max(logLikStructured, [], 2);
 
         % Calculate CIs from profile results
-        CIsImproved = findCIs(ThetaProfileImproved, logLikNormImproved, thresholdValue);
+        CIsStructured = findCIs(ThetaProfileStructured, logLikNormStructured, thresholdValue);
         
         % Store results from this realisation in a structure array
         results(iRep, iModel).ThetaTrue = mdl.ThetaTrue;
@@ -119,24 +119,24 @@ for iModel = 1:nModels
         results(iRep, iModel).logLikNorm = logLikNorm;
         results(iRep, iModel).CIs = CIs;
         results(iRep, iModel).covFlag = mdl.ThetaTrue >= CIs(:, 1) & mdl.ThetaTrue <= CIs(:, 2);
-        results(iRep, iModel).solMLEImproved = solMLEImproved;
-        results(iRep, iModel).LLMLEImproved = LLMLEImproved;
-        results(iRep, iModel).ThetaMLEImproved = ThetaMLEImproved;
-        results(iRep, iModel).ThetaProfileImproved = ThetaProfileImproved;
-        results(iRep, iModel).logLikImproved = logLikImproved;
-        results(iRep, iModel).logLikImprovedNorm = logLikImproved - max(logLikImproved, [], 2);
-        results(iRep, iModel).CIsImproved = CIsImproved;
+        results(iRep, iModel).solMLEStructured = solMLEStructured;
+        results(iRep, iModel).LLMLEStructured = LLMLEStructured;
+        results(iRep, iModel).ThetaMLEStructured = ThetaMLEStructured;
+        results(iRep, iModel).ThetaProfileStructured = ThetaProfileStructured;
+        results(iRep, iModel).logLikStructured = logLikStructured;
+        results(iRep, iModel).logLikStructuredNorm = logLikStructured - max(logLikStructured, [], 2);
+        results(iRep, iModel).CIsStructured = CIsStructured;
         parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
-        results(iRep, iModel).covFlagImproved = mdl.ThetaTrue(parsToProfile) >= CIsImproved(:, 1) & mdl.ThetaTrue(parsToProfile) <= CIsImproved(:, 2);
+        results(iRep, iModel).covFlagStructured = mdl.ThetaTrue(parsToProfile) >= CIsStructured(:, 1) & mdl.ThetaTrue(parsToProfile) <= CIsStructured(:, 2);
 
 
         % Record some summary statistics for this model
         nCallsMLE_basic(iRep, iModel) = countMLE;
         nCallsProfile_basic(iRep, iModel) = sum(countProfile);
-        nCallsMLE_improved(iRep, iModel) = countMLEImproved;
-        nCallsProfile_improved(iRep, iModel) = sum(countProfileImproved);
+        nCallsMLE_Structured(iRep, iModel) = countMLEStructured;
+        nCallsProfile_Structured(iRep, iModel) = sum(countProfileStructured);
         relErrBasic(iRep, iModel) = norm(ThetaMLE-mdl.ThetaTrue)/norm(mdl.ThetaTrue);
-        relErrImproved(iRep, iModel) = norm(ThetaMLEImproved-mdl.ThetaTrue)/norm(mdl.ThetaTrue);
+        relErrStructured(iRep, iModel) = norm(ThetaMLEStructured-mdl.ThetaTrue)/norm(mdl.ThetaTrue);
         
     end
 
@@ -146,8 +146,8 @@ for iModel = 1:nModels
     for iRep = 2:nReps
         par = mdl.getPar(results(iRep, iModel).ThetaMLE);
         results(iRep, iModel).LL1 = LLfunc( results(iRep, iModel).solMLE.eObs, results(1, iModel).obs, par);
-        par = mdl.getPar(results(iRep, iModel).ThetaMLEImproved);
-        results(iRep, iModel).LL1Improved = LLfunc( results(iRep, iModel).solMLEImproved.eObs, results(1, iModel).obs, par);
+        par = mdl.getPar(results(iRep, iModel).ThetaMLEStructured);
+        results(iRep, iModel).LL1Structured = LLfunc( results(iRep, iModel).solMLEStructured.eObs, results(1, iModel).obs, par);
     end
 end
 
@@ -181,9 +181,9 @@ end
 
 % Create output table and write latex table
 totCallsBasic = nCallsMLE_basic + nCallsProfile_basic;
-totCallsImproved = nCallsMLE_improved + nCallsProfile_improved;
+totCallsStructured = nCallsMLE_Structured + nCallsProfile_Structured;
 repNumber = (1:nReps)';
-outTab = table(repNumber, relErrBasic, relErrImproved, nCallsMLE_basic, nCallsProfile_basic, totCallsBasic, nCallsMLE_improved, nCallsProfile_improved, totCallsImproved);
+outTab = table(repNumber, relErrBasic, relErrStructured, nCallsMLE_basic, nCallsProfile_basic, totCallsBasic, nCallsMLE_Structured, nCallsProfile_Structured, totCallsStructured);
 
 % Write latex for results tables
 writeLatexCombined(mdl, outTab, results, modelLong, savFolder+fNameTex+varyLbl+".tex");

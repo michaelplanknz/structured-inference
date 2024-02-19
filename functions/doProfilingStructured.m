@@ -1,4 +1,4 @@
-function [ThetaProfile, logLik, countProfile] = doProfilingImproved(mdl, obs, ThetaMLEImproved, LLMLEImproved, nMesh)
+function [ThetaProfile, logLik, countProfile] = doProfilingStructured(mdl, obs, ThetaMLEStructured, LLMLEStructured, nMesh)
 
 % Force nMesh to be odd so there is a central point
 nMesh = 2*ceil((nMesh-1)/2) + 1;
@@ -12,7 +12,7 @@ lb_contracted = mdl.lb(parsToProfile);
 ub_contracted = mdl.ub(parsToProfile);
 profileRange = mdl.profileRange(parsToProfile);
 Theta0_contracted = mdl.Theta0(parsToProfile);
-ThetaMLEImproved_contracted = ThetaMLEImproved(parsToProfile);
+ThetaMLEStructured_contracted = ThetaMLEStructured(parsToProfile);
 
 nPars = length(Theta0_contracted);
 countProfile = zeros(nPars, 1);
@@ -21,18 +21,18 @@ logLik = zeros(nPars, nMesh);
 for iPar = 1:nPars
     jOther = setdiff(1:nPars, iPar);        % indices of parameters not being profiled
 
-    meshRange = sort( [ 1-profileRange(iPar), 1+profileRange(iPar)] * ThetaMLEImproved_contracted(iPar) );
+    meshRange = sort( [ 1-profileRange(iPar), 1+profileRange(iPar)] * ThetaMLEStructured_contracted(iPar) );
     ThetaMesh = linspace(meshRange(1), meshRange(2), nMesh);
 
     ll = zeros(1, nMesh);
-    ll(iMid) = LLMLEImproved;
+    ll(iMid) = LLMLEStructured;
     iStart = iMid+1;        % start profiling from the MLE rightwards
-    ThetaOther0 = ThetaMLEImproved_contracted(jOther);                                % use MLE as initial guess for first run
+    ThetaOther0 = ThetaMLEStructured_contracted(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart:nMesh
-        objFn = @(ThetaOther)(-calcLogLikImproved(mdl, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar) ));
+        objFn = @(ThetaOther)(-calcLogLikStructured(mdl, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar) ));
         [x, f, exitFlag, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb_contracted(jOther), ub_contracted(jOther), [], mdl.options);
         if exitFlag <= 0
-             fprintf('Warning in doProfilingImproved: fmincon failed to converge to a local minimum on iPar = %i, iStart = %i (exitFlag = %i)\n', iPar, iStart, exitFlag)
+             fprintf('Warning in doProfilingStructured: fmincon failed to converge to a local minimum on iPar = %i, iStart = %i (exitFlag = %i)\n', iPar, iStart, exitFlag)
         end
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run
@@ -41,12 +41,12 @@ for iPar = 1:nPars
 
     % now profile from the MLE leftwards
     iStart = iMid-1;        % start profiling from the MLE leftwards
-    ThetaOther0 = ThetaMLEImproved_contracted(jOther);                                % use MLE as initial guess for first run
+    ThetaOther0 = ThetaMLEStructured_contracted(jOther);                                % use MLE as initial guess for first run
     for iMesh = iStart:-1:1
-        objFn = @(ThetaOther)(-calcLogLikImproved(mdl, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar) ));
+        objFn = @(ThetaOther)(-calcLogLikStructured(mdl, obs, makeTheta(ThetaMesh(iMesh), ThetaOther, iPar) ));
         [x, f, exitFlag, output] = fmincon(objFn, ThetaOther0, [], [], [], [], lb_contracted(jOther), ub_contracted(jOther), [], mdl.options);
         if exitFlag <= 0
-             fprintf('Warning in doProfilingImproved: fmincon failed to converge to a local minimum on iPar = %i, iStart = %i (exitFlag = %i)\n', iPar, iStart, exitFlag)
+             fprintf('Warning in doProfilingStructured: fmincon failed to converge to a local minimum on iPar = %i, iStart = %i (exitFlag = %i)\n', iPar, iStart, exitFlag)
         end
         ll(iMesh) = -f;
         ThetaOther0 = x;                                          % use profile solution as the initial guess for the next run
