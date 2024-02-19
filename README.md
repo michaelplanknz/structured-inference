@@ -11,7 +11,8 @@ The sub-directory /models/ contains model-specific functions that define the mod
 
 Running *main.m* will run the basic and structured methods on the three case studies described in the article. A results file, graphs and summary latex table will be saved in /results/.
 
-Running *fitUserData.* will 
+Running *fitUserData.m* will run the basic and structured method once on a user-supplied dataset and specified model. By default, an example dataset is provided for the SEIR model. A results file and graphs will be saved in /results/.
+
 
 
 
