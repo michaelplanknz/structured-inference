@@ -5,7 +5,7 @@
 
  # How to use this repository
 
-The root directory contains the top-level Matlab scripts *main.m* and *fitUserData.m$.
+The root directory contains the top-level Matlab scripts *main.m* and *fitUserData.m*.
 
 The sub-directory /models/ contains model-specific functions that define the models studied in the article and the sub-directory /functions/ contains other functions called by the main script. 
 
@@ -28,18 +28,18 @@ Global settings are specified at the beginning of *main.m*. These may be adjuste
 By default, the model runs on the three models covered in the article, which are identified by the labels "LV", "SEIR" and "RAD_PDE" respectively.
 
 To run the code on a user-supplied model, you need to choose a label for the model, say "LABEL", and place the following function files in the sub-directory /models/:
-- specifyModelLABEL.m
-- getParLABEL.m
-- solveModelLABEL.m
-- transformSolutionLABEL.m (if the transformation for the structured method is something other than a linear scaling)
+- *specifyModelLABEL.m*
+- *getParLABEL.m*
+- *solveModelLABEL.m*
+- *transformSolutionLABEL.m* (if the transformation for the structured method is something other than a linear scaling)
 
 The inputs and outputs that are required for each of these functions are described below (see supplied files for an example in each case).
 
 ## specifyModel
 
-Inputs: varyParamsFlag - a flag that equals 0 if fixed parameters are to be used (or model is being fitted to user-supplied data -- see below) or 1 if parameters are to be randomised with each call.
+**Inputs:** varyParamsFlag - a flag that equals 0 if fixed parameters are to be used (or model is being fitted to user-supplied data -- see below) or 1 if parameters are to be randomised with each call.
 
-Outputs: mdl - a structure that has specific fields defining model properties.
+**Outputs:** mdl - a structure that has specific fields defining model properties.
 
 The required fields of mdl are:
 - getPar - a handle to the function getParLABEL()
@@ -52,7 +52,7 @@ The required fields of mdl are:
 - Theta0 - initial condition for the parameter values to use for the optimisation routine.
 - lb - lower bound for the target parameter values
 - ub - upper bound for the target parameter values
-- profileRange - profile intervals for each parameter will be from (1-profileRange)*M to (1+profileRange)*M where M is the value of that parameter at the MLE.
+- profileRange - profile intervals for each parameter will be from (1-profileRange)*m to (1+profileRange)*m where m is the value of that parameter at the MLE.
 - parsToOptimise - indices defining which parameter(s) in mdl.parLbl are inner parameters.
 - runningValues - values of the inner parameter(s) to use when solving the forward model.
 - gridSearchFlag - set to 1 to do a preliminary grid search of the inner parameter if the default starting value returns NaN (only works for a single inner parameter).
