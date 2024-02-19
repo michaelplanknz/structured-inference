@@ -1,17 +1,17 @@
 # Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences
 
-This repo provides code to accompany the article ``Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences''.
+This repository provides code to accompany the article "Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences".
 
 
  # How to use this repository
 
 The root directory contains the top-level Matlab scripts *main.m* and *fitUserData.m*.
 
-The sub-directory /models/ contains model-specific functions that define the models studied in the article and the sub-directory /functions/ contains other functions called by the main script. 
+The sub-directory /models/ contains model-specific functions (see [section on user-supplied models](#user-supplied-models)) that define the models studied in the article and the sub-directory /functions/ contains other functions called by the main script. 
 
 Running *main.m* will run the basic and structured methods on the three case studies described in the article. A results file, graphs and summary latex table will be saved in /results/.
 
-Running *fitUserData.m* will run the basic and structured method once on a user-supplied dataset and specified model. By default, an example dataset is provided for the SEIR model. A results file and graphs will be saved in /results/.
+Running *fitUserData.m* will run the basic and structured method on a user-supplied dataset (see [section on user-supplied data](#user-supplied-data)) and specified model. By default, an example dataset is provided for the SEIR model (*data/SEIR_data.csv*). A results file and graphs will be saved in /results/.
 
 The sections below describe how to customise the code to use different settings or for use with user-supplied models and data.
 
@@ -24,7 +24,7 @@ Global settings are specified at the beginning of *main.m*. These may be adjuste
  - Alpha = 0.05 - significance level for constructing confidence intervals from likelihood profiles.
  - varyParamsFlag = 0 - set to 0 to regenerate data using the *same* model parameters each rep; set to 1 to randomly draw moel parameters before generating data each rep.
  
-# Running the code on a user-supplied model
+# User-supplied models
 
 By default, the model runs on the three models covered in the article, which are identified by the labels "LV", "SEIR" and "RAD_PDE" respectively.
 
@@ -102,4 +102,8 @@ The required fields of sol are:
             sol - a solution structure  (as returned by *solveModel*) containing a field sol.eObs for the array of expected values of the observed data, under the reference value for the inner parameter(s).
 
 **Outputs:** eObs - a corresponding array of the same size as the input array sol.eObs of expected values under the specified value (Phi) of inner parameter(s).
+
  
+# User-supplied data
+
+
