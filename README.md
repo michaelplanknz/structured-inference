@@ -25,7 +25,19 @@ Global settings are specified at the beginning of *main.m*. These may be adjuste
  
 # Running the code on a user-supplied model
 
-To run the code on a user-supplied model...
+By default, the model runs on the three models covered in the article, which are identified by the labels "LV", "SEIR" and "RAD_PDE" respectively.
+
+To run the code on a user-supplied model, you need to choose a label for the model, say "LABEL", and place the following function files in the sub-directory /models/:
+- specifyModelLABEL.m
+- getParLABEL.m
+- solveModelLABEL.m
+- transformSolutionLABEL.m (if the transformation for the structured method is something other than a linear scaling)
+
+The inputs and outputs that are required for each of these functions are described below.
+
+## specifyModel
+
+
 
 
 
