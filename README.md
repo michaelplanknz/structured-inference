@@ -71,10 +71,18 @@ Note: *getPar* should copy the values in the input vector Theta into the appropi
 
 The required fields of par are:
 - Any fields that are accessed by *solveModel* in order to solve the forward model.
-- noiseModel - a string specifying the noise model to use. This can be one of the built-in noise models: Gaussian with constant std. dev. given by par.obsSD ("norm_SD_const"); Gaussian with std. dev. proportional to the mean, with constant of proportionaltity par.obsSD ("norm_SD_propMean"); Poisson ("poisson"); negative binomial with disperson factor given by par.obsK. Note if either of the Gaussian noise models are selected, par should contain a field obsIntFlag, which if set to 1 means observations are rounded to the nearest integer. Alternatively, you may specify a different noise model by adding the relevant likelihood function to *LLfunc* in terms of vectors representing the expected and observed data, and the relevant noise generation process to *genObs*. 
-- Any noise-related fields that are accessed by the likelihood function *LLfunc* or the noise generation functoin *genObs* (see previous point).
+- noiseModel - a string specifying the noise model to use. This can be one of the built-in noise models (see table below). Alternatively, you may specify a different noise model by adding the relevant likelihood function to *LLfunc* in terms of vectors representing the expected and observed data, and the relevant noise generation process to *genObs*. 
+- Any noise-related fields that are accessed by the likelihood function *LLfunc* or the noise generation functoin *genObs* (see table below).
 
 
+| Noise model label  | Noise model description | Fields required |
+| ------------- | ------------- |
+| norm_SD_const  | Gaussian noise with constant std. dev. | par.obsSD (std. dev.)  |
+|                |                                        | par.obsIntFlag (set to 1 to round observations to the nearest integer, 0 otherwise) |
+| norm_SD_propMean  | Gaussian noise with std. dev. proportional to mean | par.obsSD (constant of proportionality for std. dev.)  |
+|                |                                        | par.obsIntFlag (set to 1 to round observations to the nearest integer, 0 otherwise) |
+| poisson        | Poisson  |  |
+| negbin | Negative binomial | par.obsK (negative binomial dispersion factor) |
 
 
 
