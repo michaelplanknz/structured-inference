@@ -9,16 +9,16 @@ The root directory contains the top-level Matlab scripts `main.m` and `fitUserDa
 
 The sub-directory /models/ contains model-specific functions (see [section on user-supplied models](#user-supplied-models)) that define the models studied in the article and the sub-directory /functions/ contains other functions called by the main script. 
 
-Running *main.m* will run the basic and structured methods on the three case studies described in the article. A results file, graphs and summary latex table will be saved in /results/.
+Running `main.m` will run the basic and structured methods on the three case studies described in the article. A results file, graphs and summary latex table will be saved in /results/.
 
-Running *fitUserData.m* will run the basic and structured method on a user-supplied dataset (see [section on user-supplied data](#user-supplied-data)) and specified model. By default, an example dataset is provided for the SEIR model (*data/SEIR_data.csv*). A results file and graphs will be saved in /results/.
+Running `fitUserData.m` will run the basic and structured method on a user-supplied dataset (see [section on user-supplied data](#user-supplied-data)) and specified model. By default, an example dataset is provided for the SEIR model (`data/SEIR_data.csv`). A results file and graphs will be saved in /results/.
 
 The sections below describe how to customise the code to use different settings or for use with user-supplied models and data.
 
 
 # Global settings
 
-Global settings are specified at the beginning of *main.m*. These may be adjusted from the default values:
+Global settings are specified at the beginning of `main.m`. These may be adjusted from the default values:
 - nReps = 100 - number of independently generated data sets to analyse for each model.
 - nMesh = 41 - number of mesh points in each parameter profile.
 - Alpha = 0.05 - significance level for constructing confidence intervals from likelihood profiles.
@@ -29,14 +29,14 @@ Global settings are specified at the beginning of *main.m*. These may be adjuste
 By default, the model runs on the three models covered in the article, which are identified by the labels "LV", "SEIR" and "RAD_PDE" respectively.
 
 To run the code on a user-supplied model, you need to choose a label for the model, say "LABEL", and place the following function files in the sub-directory /models/:
-- *specifyModelLABEL.m*
-- *getParLABEL.m*
-- *solveModelLABEL.m*
-- *transformSolutionLABEL.m* (if the transformation for the structured method is something other than a linear scaling)
+- `specifyModelLABEL.m`
+- `getParLABEL.m`
+- `solveModelLABEL.m`
+- `transformSolutionLABEL.m` (if the transformation for the structured method is something other than a linear scaling)
 
 The inputs and outputs that are required for each of these functions are described below (see supplied files for an example in each case).
 
-Before running *main.m*, ensure the variable getModel is set to @specifyModelLABEL.
+Before running `main.m`, ensure the variable *getModel* is set to *@specifyModelLABEL*.
 
 ## specifyModel
 
@@ -45,9 +45,9 @@ Before running *main.m*, ensure the variable getModel is set to @specifyModelLAB
 **Outputs:** mdl - a structure that has specific fields defining model properties.
 
 The required fields of mdl are:
-- mdl.getPar - a handle to the function getParLABEL()
-- mdl.solveModel - a handle to the function solveModel()
-- mdl.transformSolution - handle to a function that transforms a known solution for a reference value of the inner parameter(s) to the solution for any other valid value. If the transformation is a linear scaling, use @transformSolutionMultiply, otherwise a user-supplied transformation function must be provided.
+- mdl.getPar - a handle to the function `getParLABEL`
+- mdl.solveModel - a handle to the function `solveModelLABEL`
+- mdl.transformSolution - handle to a function that transforms a known solution for a reference value of the inner parameter(s) to the solution for any other valid value. If the transformation is a linear scaling, use `@transformSolutionMultiply`, otherwise a user-supplied transformation function must be provided.
 - mdl.xLbl - string for labelling the horizontal axis of graphs of model output.
 - mdl.yLbl - string for labelling the vertical axis of graphs of model output.
 - mdl.parLbl - string array of labels for the target parameters for inference.
@@ -65,16 +65,16 @@ The required fields of mdl are:
 
 ## getPar
 
-**Inputs:** Theta - a vector of values for the *target* parameters specified in the *specifyModel* function.
+**Inputs:** Theta - a vector of values for the *target* parameters specified in the `specifyModelLABEL` function.
 
 **Outputs:** par - a structure that has fields providing values of all parameters of the forward model and the noise model.
 
-Note: *getPar* should copy the values in the input vector Theta into the appropiate fields of the output structure par (see supplied code for examples).
+Note: `getPar` should copy the values in the input vector Theta into the appropiate fields of the output structure par (see supplied code for examples).
 
 The required fields of par are:
-- Any fields that are accessed by *solveModel* in order to solve the forward model.
-- par.noiseModel - a string specifying the noise model to use. This can be one of the built-in noise models (see table below). Alternatively, you may specify a different noise model by adding the relevant likelihood function to *LLfunc* in terms of vectors representing the expected and observed data, and the relevant noise generation process to *genObs*. 
-- Any noise-related fields that are accessed by the likelihood function *LLfunc* or the noise generation functoin *genObs* (see table below).
+- Any fields that are accessed by `solveModelLABEL` in order to solve the forward model.
+- par.noiseModel - a string specifying the noise model to use. This can be one of the built-in noise models (see table below). Alternatively, you may specify a different noise model by adding the relevant likelihood function to `LLfunc` in terms of vectors representing the expected and observed data, and the relevant noise generation process to `genObs`. 
+- Any noise-related fields that are accessed by the likelihood function `LLfunc` or the noise generation functoin `genObs` (see table below).
 
 
 | Noise model label  | Noise model description | Fields required |
@@ -89,7 +89,7 @@ The required fields of par are:
 
 ## solveModel
 
-**Inputs:** par - parameter structure as returned by *getPar*.
+**Inputs:** par - parameter structure as returned by `getParLABEL`.
 
 **Outputs:** sol - a structure containing the solution of the forward model for thr specified parameter values.
 
@@ -101,7 +101,7 @@ The required fields of sol are:
 ## transformSolution
 
 **Inputs:** Phi - the value of the inner parameter(s) at which the solution is required.
-            sol - a solution structure  (as returned by *solveModel*) containing a field sol.eObs for the array of expected values of the observed data, under the reference value for the inner parameter(s).
+            sol - a solution structure  (as returned by `solveModelLABEL`) containing a field sol.eObs for the array of expected values of the observed data, under the reference value for the inner parameter(s).
 
 **Outputs:** eObs - a corresponding array of the same size as the input array sol.eObs of expected values under the specified value (Phi) of inner parameter(s).
 
@@ -109,13 +109,20 @@ The required fields of sol are:
 # User-supplied data
 
 To run the code on a user-supplied dataset:
-- Save the data as a CSV file in the /data/ sub-directory.
-- Set the variable dataFName in *fitUserData.m* to the appropriate file name containing the data.
+- Save the data as a CSV file in the /data/ sub-directory. This should be in the same form (same array dimensions, same time/space observation coordinates) as the output from the `solveModelLABEL` function in sol.eObs.
+- Set the variable dataFName in `fitUserData.m` to the appropriate file name containing the data.
 - Ensure the model specification functions are supplied in the /models/ sub-directiory as described [above](#user-supplied-models).
-- Set the variable getModel in *fitUserData.m* the the appropriate model specification function of the form *specifyModelLABEL*.
+- Set the variable getModel in `fitUserData.m` the the appropriate model specification function of the form `specifyModelLABEL`.
 - Adjust the [global settings](#global-settings) as required (note nReps and varyParamsFlag are not needed in this case as the method is only being run on a single dataset rather than multiple synthetically generated datasets).
-- Run the script *fitUserData*.
+- Run the script `fitUserData.m`.
 
-This will generate profile likelihood graphs for the target parameters using both the basic and structured methods. The numerical results will be saved in a filename '/results/results_userdata.mat'
-
+This will generate profile likelihood graphs for the target parameters using both the basic and structured methods. The numerical results will be saved in a file '/results/results_userdata.mat'. This file contains a structure called results with the following fields:
+- solMLE - model solution output at the MLE parameter values.
+- LLMLE - log likelihood evaluated at the MLE.
+- ThetaMLE - vector of parameter values at the MLE.
+- ThetaProfile - array of parameter values profiled, with each row of ThetaProfile containing the range of values in the profiling interval for one of the target parameters.
+- logLik - corresponding array of log likelihood values at the profiling points in ThetaProfile.
+- logLikNorm - normalised version of logLik (i.e. difference between logLik and LLMLE).
+- CIs - (1-Alpha)% confidence intervals for each profiled parameter
+- all of the above with the variabled name suffixed with *Structured* for corresponding results from the structured method (NB for the fields containing the profiling results, only *outer* parameters are profiled, so the arrays will have k fewer rows than for the basic method, where k is the number of inner parameters). 
   
