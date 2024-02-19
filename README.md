@@ -109,11 +109,11 @@ The required fields of sol are:
 # User-supplied data
 
 To run the code on a user-supplied dataset:
-- Save the data as a CSV file in the /data/ sub-directory. This should be in the same form (same array dimensions, same time/space observation coordinates) as the output from the `solveModelLABEL` function in sol.eObs.
-- Set the variable dataFName in `fitUserData.m` to the appropriate file name containing the data.
 - Ensure the model specification functions are supplied in the /models/ sub-directiory as described [above](#user-supplied-models).
 - Set the variable getModel in `fitUserData.m` the the appropriate model specification function of the form `specifyModelLABEL`.
-- Adjust the [global settings](#global-settings) as required (note nReps and varyParamsFlag are not needed in this case as the method is only being run on a single dataset rather than multiple synthetically generated datasets).
+- Save the data as a CSV file in the /data/ sub-directory. This should be in the same form (same array dimensions, same time/space observation coordinates) as the output returned by the `solveModelLABEL` function in sol.eObs.
+- Set the variable dataFName in `fitUserData.m` to the appropriate file name containing the data.
+- Adjust the [global settings](#global-settings) in `fitUserData.m` as required (note nReps and varyParamsFlag are not needed in this case as the method is only being run on a single dataset rather than multiple synthetically generated datasets).
 - Run the script `fitUserData.m`.
 
 This will generate profile likelihood graphs for the target parameters using both the basic and structured methods. The numerical results will be saved in a file '/results/results_userdata.mat'. This file contains a structure called results with the following fields:
