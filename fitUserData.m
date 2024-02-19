@@ -5,7 +5,6 @@ close all
 % Global settings
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 % Folder with Matlab functions
 addpath('functions', 'models');
 
@@ -21,17 +20,29 @@ nMesh = 41;            % number of points in parameter mesh for profiles
 Alpha = 0.05;   % significance level for calculating CIs
 
 % User-supplied model specification file (see README)
-mdl = specifyModelSEIR(0);
+getModel = @specifyModelSEIR;
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Initialisation commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Read in user-supplied data
 obs = readmatrix(dataFName);
-       
+    
 % Threshold value on normalised log likelihood for (1-Alpha)% confidence intervals 
 thresholdValue = -0.5*chi2inv(1-Alpha, 1);
+
+
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Find MLE and profile each parameter using basic method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Call model specification function (input argument 0 means there will be
+% no parameter randomisation, but this is irrelavant here since the true parameter values are unknown)
+mdl = getModel(0);
 
 % MLE
 [ThetaMLE, parMLE, solMLE, LLMLE, countMLE] = doMLE(mdl, obs);
