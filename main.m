@@ -9,7 +9,8 @@ close all
 rng(19250);
 
 % Folder with Matlab functions
-addpath('functions');
+addpath('functions', 'models');
+
 
 % Folder and filename for saving results and plots 
 savFolder = "results/";
