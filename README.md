@@ -1,6 +1,6 @@
-# structured-inference
+# Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences
 
- Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences.
+This repo provides code to accompany the article ``Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences''.
 
 
  # How to use this repository
