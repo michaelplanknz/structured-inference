@@ -76,7 +76,7 @@ The required fields of par are:
 
 
 | Noise model label  | Noise model description | Fields required |
-| ------------- | ------------- |
+| ------------- | ------------- | ------------- |
 | norm_SD_const  | Gaussian noise with constant std. dev. | par.obsSD (std. dev.)  |
 |                |                                        | par.obsIntFlag (set to 1 to round observations to the nearest integer, 0 otherwise) |
 | norm_SD_propMean  | Gaussian noise with std. dev. proportional to mean | par.obsSD (constant of proportionality for std. dev.)  |
