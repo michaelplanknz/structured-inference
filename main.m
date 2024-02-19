@@ -186,8 +186,7 @@ repNumber = (1:nReps)';
 outTab = table(repNumber, relErrBasic, relErrImproved, nCallsMLE_basic, nCallsProfile_basic, totCallsBasic, nCallsMLE_improved, nCallsProfile_improved, totCallsImproved);
 
 % Write latex for results tables
-writeLatex(outTab, modelLong, savFolder+fNameTex+varyLbl+".tex");                   % main results table
-writeCovLatex(results, mdl, modelLong, savFolder+fNameTex+"_cov"+varyLbl+".tex" );  % coverage statistics table
+writeLatexCombined(mdl, outTab, results, modelLong, savFolder+fNameTex+varyLbl+".tex");
 
 % Save results
 save(savFolder+fNameOut+varyLbl+".mat");

@@ -13,7 +13,7 @@ mdl.xLbl = 'time';
 mdl.yLbl = 'observed population count';
 
 % Specify true values of parameters to be fitted
-mdl.parLbl = ["r", "a", "mu", "p_{obs}"];
+mdl.parLbl = ["r", "a", "\mu", "p_{obs}"];
 mdl.ThetaTrue = [0.5; 0.75; 0.5; 0.1];
 
 % Initial guess for fitted parameters 

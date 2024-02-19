@@ -101,9 +101,9 @@ for iPar = 1:nPars
     end
     if ~isempty(ind) & legendDoneFlag == 0
        if trueSolFlag
-          legend('profile (basic)', 'profile (structured)', 'MLE (basic)', 'MLE (structured)', 'actual')
+          legend('profile (basic)', 'profile (structured)', 'MLE (basic)', 'MLE (structured)', 'actual', 'Location', 'south')
        else
-          legend('profile (basic)', 'profile (structured)', 'MLE (basic)', 'MLE (structured)')
+          legend('profile (basic)', 'profile (structured)', 'MLE (basic)', 'MLE (structured)', 'Location', 'south')
        end
        legendDoneFlag = 1;
     end
