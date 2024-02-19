@@ -5,7 +5,7 @@ This repository provides code to accompany the article "Structured methods for p
 
  # How to use this repository
 
-The root directory contains the top-level Matlab scripts 'main.m' and 'fitUserData.m'.
+The root directory contains the top-level Matlab scripts `main.m` and `fitUserData.m`.
 
 The sub-directory /models/ contains model-specific functions (see [section on user-supplied models](#user-supplied-models)) that define the models studied in the article and the sub-directory /functions/ contains other functions called by the main script. 
 
