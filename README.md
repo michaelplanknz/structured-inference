@@ -55,7 +55,7 @@ The required fields of mdl are:
 - ub - upper bound for the target parameter values
 - profileRange - profile intervals for each parameter will be from (1-profileRange)*m to (1+profileRange)*m where m is the value of that parameter at the MLE.
 - parsToOptimise - indices defining which parameter(s) in mdl.parLbl are inner parameters.
-- runningValues - values of the inner parameter(s) to use when solving the forward model.
+- runningValues - reference value(s) of the inner parameter(s) to use when solving the forward model.
 - gridSearchFlag - set to 1 to do a preliminary grid search of the inner parameter if the default starting value returns NaN (only works for a single inner parameter).
 - options - an optimisation options structure for *fmincon* as returned by Matlab's *optimoptions* - default code uses the interior-point algorithm and turns *fmincon* display off.
 - GSFlag - set to 1 to do a global search for the MLE or 0 to do a local search (i.e. *fmincon* only).
@@ -85,5 +85,21 @@ The required fields of par are:
 | negbin | Negative binomial | par.obsK (negative binomial dispersion factor) |
 
 
+## solveModel
 
+**Inputs:** par - parameter structure as returned by *getPar*.
+
+**Outputs:** sol - a structure containing the solution of the forward model for thr specified parameter values.
+
+The required fields of sol are:
+- eObs - a column vector or matrix containing the expected value of the observed data under the forward model solution at the specified parameter values.
+- xPlot - column vector containing corresponding coordinate values for the horizontal axis of plots of the model solution (typically represnenting either time or space), such that each row of eObs is the model solution at the corresponding value of xPlot for time or space. 
+
+
+## transformSolution
+
+**Inputs:** Phi - the value of the inner parameter(s) at which the solution is required.
+            sol - a solution structure  (as returned by *solveModel*) containing a field sol.eObs for the array of expected values of the observed data, under the reference value for the inner parameter(s).
+
+**Outputs:** eObs - a corresponding array of the same size as the input array sol.eObs of expected values under the specified value (Phi) of inner parameter(s).
  
