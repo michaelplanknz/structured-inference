@@ -1,5 +1,18 @@
 function [ThetaMLE, parMLE, solMLE, LLMLE, countMLE] = doMLE(mdl, obs)
 
+% Function to calculate the MLE using the basic methiod
+% 
+% USAGE: [ThetaMLE, parMLE, solMLE, LLMLE, countMLE] = doMLE(mdl, obs)
+%
+% INPUTS: mdl - a model-specification structure (as returned by specifyModel)
+%         obs - an array of observed data
+%
+% OUTPUTS: ThetaMLE - vector of target parameter values at the MLE
+%          parMLE - full parameter structure (as returned by getPar) containing all parameter values at the MLE
+%          solMLE - solution structure (as returned by solveModel) for the model at the MLE
+%          LLMLE - value of the log-likelihood function at the MLE
+%          countMLE - count of function calls to solveModel
+
 % Deine objective function for optimisation
 objFn = @(Theta)(-calcLogLik(mdl, obs, Theta));
 

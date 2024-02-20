@@ -53,8 +53,6 @@ nCallsProfile_Structured = zeros(nReps, nModels);
 relErrBasic = zeros(nReps, nModels);
 relErrStructured = zeros(nReps, nModels);
 
-% Threshold value on normalised log likelihood for (1-Alpha)% confidence intervals 
-thresholdValue = -0.5*chi2inv(1-Alpha, 1);
 
 % Loop through each model
 for iModel = 1:nModels
@@ -88,7 +86,7 @@ for iModel = 1:nModels
        logLikNorm = logLik - LLMLE;     % calculate normalised log-likelihood
 
        % Calculate CIs from profile results
-        CIs = findCIs(ThetaProfile, logLikNorm, thresholdValue);
+        CIs = findCIs(ThetaProfile, logLikNorm, Alpha);
            
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,7 +102,7 @@ for iModel = 1:nModels
         logLikStructuredNorm = logLikStructured - LLMLEStructured;      % calculate normalised log-likelihood
 
         % Calculate CIs from profile results
-        CIsStructured = findCIs(ThetaProfileStructured, logLikNormStructured, thresholdValue);
+        CIsStructured = findCIs(ThetaProfileStructured, logLikNormStructured, Alpha);
         
         % Store results from this realisation in a structure array
         results(iRep, iModel).ThetaTrue = mdl.ThetaTrue;
@@ -168,7 +166,7 @@ end
 iToPlot = 1;            % realisation number to plot
 for iModel = 1:nModels
     parsToProfile = setdiff(1:length(mdl(iModel).Theta0), mdl(iModel).parsToOptimise);
-    plotGraphs(results(iToPlot, iModel), parsToProfile, thresholdValue, mdl(iModel), modelLbl(iModel)+varyLbl, savFolder, iModel);
+    plotGraphs(results(iToPlot, iModel), parsToProfile, Alpha, mdl(iModel), modelLbl(iModel)+varyLbl, savFolder, iModel);
 end
 
 % Create output table and write latex table

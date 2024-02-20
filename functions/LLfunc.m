@@ -1,12 +1,27 @@
 function LL = LLfunc(yMean, yData, par)
 
+% Function to return the log-likelihood function for given values of the observed data and model solutions
+%
+% USAGE: LL = LLfunc(yMean, yData, par)
+%
+% INPUTS: yMean - expected value of the data according to the model soltuion
+%         yData - observed data
+%         par - structure of model parameter values (as returned by getPar) - note only the fields of par relating to the noise model (type and parameters) will be accessed
+% 
+% OUTPUTS: LL - log-likelihood
+%
+% NB: par.noiseModel should be one of "norm_SD_const", "norm_SD_propMean", "poisson", "negbin"
+%     If "norm_SD_const", par.obsSD should be set to the std. dev. of the noise distribution
+%     If "norm_SD_prop", par.obsSD should be set to the proportionality constant realting the std. dev. of the noise distribution to the mean
+%     If "negbin", par.obsK should be set to the dispersion factor of the negative binomial noise distribution
+
 small = 1e-10;
 
 % If yMean and yData are n x m matrices (e.g. n x 2 matrix of time eries of 2 observed variables) this reshapes them both to be column vectors
 yMean = yMean(:);
 yData = yData(:);
 
-
+% Number of observed datapoints
 nPoints = numel(yData);
 
 if par.noiseModel == "norm_SD_const"

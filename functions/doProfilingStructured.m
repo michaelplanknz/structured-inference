@@ -1,5 +1,21 @@
 function [ThetaProfile, logLik, countProfile] = doProfilingStructured(mdl, obs, ThetaMLEStructured, LLMLEStructured, nMesh)
 
+% Function to calculate the univariate profiles using the structured methiod
+% 
+% USAGE: [ThetaProfile, logLik, countProfile] = doProfilingStructured(mdl, obs, ThetaMLEStructured, LLMLEStructured, nMesh)
+%
+% INPUTS: mdl - a model-specification structure (as returned by specifyModel)
+%         obs - an array of observed data
+%         ThetaMLEStructured - vector of target parameter values at the MLE
+%         LLMLEStructured - value of the log-likelihood function at the MLE
+%         nMesh - number of mesh points to use to construct the profile
+%
+% OUTPUTS: ThetaProfile - matrix each row of which is the uniform mesh of values of the outer target parameter used in the profile
+%          logLik - corresponding matrix of log-likelihood values for each outer target parameter
+%          countProfile - count of function calls to solveModel
+%
+% NB: because the inner parameter(s) aren't profiled, the outputs ThetaProfile and logLik will have fewer rows than the corresponding outputs from doProfiling using the basic method
+
 % Force nMesh to be odd so there is a central point
 nMesh = 2*ceil((nMesh-1)/2) + 1;
 iMid = (nMesh+1)/2;     % index of central point in the mesh

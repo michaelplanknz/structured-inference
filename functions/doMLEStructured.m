@@ -1,5 +1,17 @@
 function [ThetaMLEStructured, parMLEStructured, solMLEStructured, LLMLEStructured, countMLEStructured] = doMLEStructured(mdl, obs)
 
+% Function to calculate the MLE using the structured methiod
+% 
+% USAGE:  [ThetaMLEStructured, parMLEStructured, solMLEStructured, LLMLEStructured, countMLEStructured] = doMLEStructured(mdl, obs)
+%
+% INPUTS: mdl - a model-specification structure (as returned by specifyModel)
+%         obs - an array of observed data
+%
+% OUTPUTS: ThetaMLEStructured - vector of target parameter values at the MLE
+%          parMLEStructured - full parameter structure (as returned by getPar) containing all parameter values at the MLE
+%          solMLEStructured - solution structure (as returned by solveModel) for the model at the MLE
+%          LLMLEStructured - value of the log-likelihood function at the MLE
+%          countMLEStructured - count of function calls to solveModel
 
 % Indices of remianing parameters in parLbl to profile
 parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
