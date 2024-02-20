@@ -2,6 +2,13 @@ clear
 close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TOP-LEVEL SCRIPT TO REPRODUCE THE RESULTS IN THE ARTICLE
+% Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Global settings
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -24,19 +31,21 @@ Alpha = 0.05;   % significance level for calculating CIs
 
 varyParamsFlag = 0;    % If set to 0, each rep will regenerate data using the *same* model parameters; if set                                                   to 1, each rep will randomly draw target parameter values and then regenerate data
 
-modelLbl = ["LV", "SEIR", "RAD_PDE"]';                      % labels for models - can include "LV", "SEIR", "RAD_PDE"
-modelLong = ["Predator-prey", "SEIR", "Adv. diff."]';       % labels to use in latex tables
-% modelLbl = "LV";
-% modelLong = modelLbl;
+modelLbl = ["LV", "SEIR", "RAD_PDE"]';                                 % string array of labels for models - can include "LV", "SEIR", "RAD_PDE"
+getModel = {@specifyModelLV, @specifyModelSEIR, @specifyModelRAD_PDE}; % cell array of corresponding function handles to the model-specific function `specifyModelXXXX()`
+modelLong = ["Predator-prey", "SEIR", "Adv. diff."]';                  % string array of corresponding labels to use in latex tables
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
-
-
+% Number of models to be run
 nModels = length(modelLbl);
 
+% Initialise storage arrays
 nCallsMLE_basic = zeros(nReps, nModels);
 nCallsProfile_basic = zeros(nReps, nModels);
 nCallsMLE_Structured = zeros(nReps, nModels);
@@ -47,64 +56,52 @@ relErrStructured = zeros(nReps, nModels);
 % Threshold value on normalised log likelihood for (1-Alpha)% confidence intervals 
 thresholdValue = -0.5*chi2inv(1-Alpha, 1);
 
+% Loop through each model
 for iModel = 1:nModels
     fprintf('\nModel %s\n', modelLbl(iModel))
 
-    % Specify the model-specific functions here:
-    if modelLbl(iModel) == "SEIR"
-        getModel = @specifyModelSEIR;
-    elseif modelLbl(iModel) == "LV"
-        getModel = @specifyModelLV;
-    elseif modelLbl(iModel) == "RAD_PDE"
-        getModel = @specifyModelRAD_PDE;
-    else
-        error('Warning: model %s not found\n', modelLbl(iModel) );
-    end
-   
-
+  
+    % Use a parallel loop to apply the methods to a series of independently generated synthetic datasets
     parfor iRep = 1:nReps
         fprintf('   rep %i/%i\n', iRep, nReps)
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Generate data from forward model
+        % Generate synthetic data from forward model
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-       % rng(iRep*1000+421);
-         
-        mdl = getModel(varyParamsFlag);     % if varyParamsFlag == 0 this will always return the same values in mdl.ThetaTrue, if varyParamsFlag == 1 it will return different mdl.ThetaTrue for each rep
-        par = mdl.getPar(mdl.ThetaTrue);
-        sol = mdl.solveModel(par);
-        obs = genObs(sol.eObs, par);
+        
+        mdl = getModel{iModel}(varyParamsFlag);     % if varyParamsFlag == 0 this will always return the same values in mdl.ThetaTrue, if varyParamsFlag == 1 it will return different mdl.ThetaTrue for each rep
+        par = mdl.getPar(mdl.ThetaTrue);    % get a structure containing model parameter values
+        sol = mdl.solveModel(par);          % solve forward model to find the expected values of the observed data
+        obs = genObs(sol.eObs, par);        % generate observed data by applying the noise model specified in par.noiseModel 
 
         
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Find MLE and profile each parameter using basic method
+        % BASIC METHOD: Find MLE and profile each parameter using basic method
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % MLE
-
         [ThetaMLE, parMLE, solMLE, LLMLE, countMLE] = doMLE(mdl, obs);
         
         % Profiling
        [ThetaProfile, logLik, countProfile] = doProfiling(mdl, obs, ThetaMLE, LLMLE, nMesh);
-       logLikNorm = logLik - LLMLE;
+       logLikNorm = logLik - LLMLE;     % calculate normalised log-likelihood
 
        % Calculate CIs from profile results
         CIs = findCIs(ThetaProfile, logLikNorm, thresholdValue);
            
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Find MLE and profile each (non-optimised) parameter with structured inference method
+        %  STRUCTURED METHOD: Find MLE and profile each (outer) parameter with structured inference method
         % NB variables with 'Structured" suffix relate to output from the structured inference method as opposed to the basic method
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
         
         % MLE
         [ThetaMLEStructured, parMLEStructured, solMLEStructured, LLMLEStructured, countMLEStructured] = doMLEStructured(mdl, obs);
         
         % Profiling    
         [ThetaProfileStructured, logLikStructured, countProfileStructured] = doProfilingStructured(mdl, obs, ThetaMLEStructured, LLMLEStructured, nMesh);
-        logLikStructuredNorm = logLikStructured - LLMLEStructured;
+        logLikStructuredNorm = logLikStructured - LLMLEStructured;      % calculate normalised log-likelihood
 
         % Calculate CIs from profile results
         CIsStructured = findCIs(ThetaProfileStructured, logLikNormStructured, thresholdValue);
@@ -128,27 +125,27 @@ for iModel = 1:nModels
         results(iRep, iModel).logLikStructured = logLikStructured;
         results(iRep, iModel).logLikStructuredNorm = logLikStructuredNorm;
         results(iRep, iModel).CIsStructured = CIsStructured;
-        parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);
+        parsToProfile = setdiff(1:length(mdl.Theta0), mdl.parsToOptimise);      % parsToProfile contains the indices of the outer parameters; parsToOptimise contains the indices of the inner parameters
         results(iRep, iModel).covFlagStructured = mdl.ThetaTrue(parsToProfile) >= CIsStructured(:, 1) & mdl.ThetaTrue(parsToProfile) <= CIsStructured(:, 2);
 
 
         % Record some summary statistics for this model
-        nCallsMLE_basic(iRep, iModel) = countMLE;
-        nCallsProfile_basic(iRep, iModel) = sum(countProfile);
-        nCallsMLE_Structured(iRep, iModel) = countMLEStructured;
-        nCallsProfile_Structured(iRep, iModel) = sum(countProfileStructured);
-        relErrBasic(iRep, iModel) = norm(ThetaMLE-mdl.ThetaTrue)/norm(mdl.ThetaTrue);
-        relErrStructured(iRep, iModel) = norm(ThetaMLEStructured-mdl.ThetaTrue)/norm(mdl.ThetaTrue);
+        nCallsMLE_basic(iRep, iModel) = countMLE;                                                     % number of calls to `solveModel` needed to calculate the MLE using the basic method
+        nCallsProfile_basic(iRep, iModel) = sum(countProfile);                                        % number of calls to `solveModel` needed to calculate the profiles using the basic method
+        nCallsMLE_Structured(iRep, iModel) = countMLEStructured;                                      % number of calls to `solveModel` needed to calculate the MLE using the structured method
+        nCallsProfile_Structured(iRep, iModel) = sum(countProfileStructured);                         % number of calls to `solveModel` needed to calculate the profiles using the structured method
+        relErrBasic(iRep, iModel) = norm(ThetaMLE-mdl.ThetaTrue)/norm(mdl.ThetaTrue);                 % relative error in the MLE using the basic method
+        relErrStructured(iRep, iModel) = norm(ThetaMLEStructured-mdl.ThetaTrue)/norm(mdl.ThetaTrue);  % relative error in the MLE using the structured method
         
     end
 
     % To check coverage evaluate the likelihood function for the 1st rep
     % at the MLE from the other reps
-    mdl = getModel(0); 
+    mdl(iModel) = getModel{iModel}(0); 
     for iRep = 2:nReps
-        par = mdl.getPar(results(iRep, iModel).ThetaMLE);
+        par = mdl(iModel).getPar(results(iRep, iModel).ThetaMLE);
         results(iRep, iModel).LL1 = LLfunc( results(iRep, iModel).solMLE.eObs, results(1, iModel).obs, par);
-        par = mdl.getPar(results(iRep, iModel).ThetaMLEStructured);
+        par = mdl(iModel).getPar(results(iRep, iModel).ThetaMLEStructured);
         results(iRep, iModel).LL1Structured = LLfunc( results(iRep, iModel).solMLEStructured.eObs, results(1, iModel).obs, par);
     end
 end
@@ -159,24 +156,17 @@ end
 %%
 % Write outputs
 
+% Filename suffic to indicate whether parameters are fixed or varied between reps
 if varyParamsFlag == 0
     varyLbl = "_fixed";
 else
     varyLbl = "_varied_fixIC";
 end
 
-% Plotting (a single realisation) for each model
+
+% Plot graphs for (a single realisation of) each model
 iToPlot = 1;            % realisation number to plot
 for iModel = 1:nModels
-    % Specify model-specific functions and values here:
-    if modelLbl(iModel) == "SEIR"
-        mdl(iModel) = specifyModelSEIR(0);
-    elseif modelLbl(iModel) == "LV"
-        mdl(iModel) = specifyModelLV(0);
-    elseif modelLbl(iModel) == "RAD_PDE"
-        mdl(iModel) = specifyModelRAD_PDE(0);
-    end
-
     parsToProfile = setdiff(1:length(mdl(iModel).Theta0), mdl(iModel).parsToOptimise);
     plotGraphs(results(iToPlot, iModel), parsToProfile, thresholdValue, mdl(iModel), modelLbl(iModel)+varyLbl, savFolder, iModel);
 end
