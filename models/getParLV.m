@@ -1,4 +1,9 @@
-function par = getParLV(Theta);
+function par = getParLV(Theta)
+
+% Function to return a structure `par` of parameter values for the predator-prey model
+% The input variable Theta contains the values of the target parameters, which will vary form one run of the model to the next. All other parameters are fixed.
+% The field par.noiseModel is required to specify the noise model being used for observed data.
+% Built-in options for the noise model are "norm_SD_const", "norm_SD_propMean", "poisson" and "negBin" - see ReadMe file on the GitHub repo `structured-inference` for details
 
 par.tMax = 100;        % simulation time 
 

@@ -1,5 +1,11 @@
 function sol = solveModelSEIR(par)
 
+% Function to solve the SEIR model for specified parameter values in the structure par
+% The output sol is a structure containing (at a minimum) two fields
+% sol.xPlot is a vector of values of the independent model variable (typically time or space)
+% sol.eObs is a matrix containing the model solution (expected values of observed data)
+% Each row of sol.eObs contains the expected value of the observed data at the value of the independent variable in the correspondng row of sol.xPlot
+
 tSpan = 0:1:par.tMax;
 
 

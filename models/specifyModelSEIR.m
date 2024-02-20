@@ -1,5 +1,10 @@
 function mdl = specifyModelSEIR(varyParamsFlag)
 
+% Function to specify the SEIR model
+% If varyParamsFlag is set to 0, target parameters (Theta) will be set to default values
+% If varyParamsFlag is set to 1, target parameters will be indepdentally drawn from distributions with the default values as means
+% See ReadMe file on the GitHub repo `structured-inference` for detailed description of the fields of mdl
+
 parameterCV = 0.1;      % CV in distribution of randomised parameters (when randomisation option is selected)
 ICCV = 0.05;            % CV in distribution of ICs for fmincon about the true value (when randomisation option is selected)
 
