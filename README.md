@@ -39,7 +39,7 @@ To run the code on a user-supplied model, you need to choose a label for the mod
 
 The inputs and outputs that are required for each of these functions are described below (see supplied files for an example in each case).
 
-Before running `main.m`, ensure the variable *getModel* is set to *@specifyModelLABEL*.
+Before running `main.m`, ensure the cell array variable *getModel* contains the funtion handle *@specifyModelLABEL*. If more than one model is being run, *getModel* is a cell array (of the same dimensions as modelLbl) containing function handles to each of the models being run.
 
 ## specifyModel
 
