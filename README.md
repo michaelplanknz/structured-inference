@@ -2,6 +2,9 @@
 
 This repository provides code to accompany the article "Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences".
 
+A preprint of the article is available at ...
+Results in this version were generated using the commit tagged ...
+
 
  # How to use this repository
 
