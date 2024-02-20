@@ -68,7 +68,7 @@ CIs = findCIs(ThetaProfile, logLikNorm, thresholdValue);
 logLikStructuredNorm = logLikStructured - LLMLEStructured;
 
 % Find CIs
-CIsStructured = findCIs(ThetaProfileStructured, logLikNormStructured, thresholdValue);
+CIsStructured = findCIs(ThetaProfileStructured, logLikStructuredNorm, thresholdValue);
 
 % Store results in a structure
 results.obs = obs;
