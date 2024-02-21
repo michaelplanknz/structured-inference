@@ -13,7 +13,7 @@ function CIs = findCIs(x, LL, Alpha)
 
 
 % Calculate threshold value on normalised log likelihood for (1-Alpha)% confidence intervals 
-thresholdValue = -0.5*chi2inv(1-Alpha, 1);
+threshold = -0.5*chi2inv(1-Alpha, 1);
 
 % Number of parameters to calculatye CIs for and number of mesh points for each parameter
 [nPars, nPoints] = size(x);

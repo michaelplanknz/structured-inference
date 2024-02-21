@@ -1,7 +1,7 @@
 function plotGraphs(results, parsToProfile, Alpha, mdl, savLbl, savFolder, iCall)
 
 % Calculate threshold value on normalised log likelihood for (1-Alpha)% confidence intervals 
-thresholdValue = -0.5*chi2inv(1-Alpha, 1);
+threshold = -0.5*chi2inv(1-Alpha, 1);
 
 % Extract variables from results structure
 if isfield(results, 'sol')

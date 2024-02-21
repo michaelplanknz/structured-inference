@@ -25,7 +25,7 @@ fNameOut = "results";
 fNameTex = "table";
 
 % Global numerical settings
-nReps = 100;    % number of independently generated data sets to analyse for each model
+nReps = 500;    % number of independently generated data sets to analyse for each model
 nMesh = 41;     % number of points in parameter mesh for profiles
 Alpha = 0.05;   % significance level for calculating CIs
 
