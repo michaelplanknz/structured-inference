@@ -2,10 +2,12 @@
 *.png
 *.asv
 *.pdf
+*.docx
 results/
 figures/
 papers/
 scraps/
 mat/
 Ogata Banks Solution/
+journal/
 desktop.ini
