@@ -58,7 +58,9 @@ relErrStructured = zeros(nReps, nModels);
 for iModel = 1:nModels
     fprintf('\nModel %s\n', modelLbl(iModel))
 
-  
+    % getModel function for the current model being used:
+    getThisModel = getModel{iModel};
+
     % Use a parallel loop to apply the methods to a series of independently generated synthetic datasets
     parfor iRep = 1:nReps
         fprintf('   rep %i/%i\n', iRep, nReps)
@@ -67,7 +69,7 @@ for iModel = 1:nModels
         % Generate synthetic data from forward model
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        mdl = getModel{iModel}(varyParamsFlag);     % if varyParamsFlag == 0 this will always return the same values in mdl.ThetaTrue, if varyParamsFlag == 1 it will return different mdl.ThetaTrue for each rep
+        mdl = getThisModel(varyParamsFlag);     % if varyParamsFlag == 0 this will always return the same values in mdl.ThetaTrue, if varyParamsFlag == 1 it will return different mdl.ThetaTrue for each rep
         par = mdl.getPar(mdl.ThetaTrue);    % get a structure containing model parameter values
         sol = mdl.solveModel(par);          % solve forward model to find the expected values of the observed data
         obs = genObs(sol.eObs, par);        % generate observed data by applying the noise model specified in par.noiseModel 
@@ -139,7 +141,7 @@ for iModel = 1:nModels
 
     % To check coverage evaluate the likelihood function for the 1st rep
     % at the MLE from the other reps
-    mdl(iModel) = getModel{iModel}(0); 
+    mdl(iModel) = getThisModel(0); 
     for iRep = 2:nReps
         par = mdl(iModel).getPar(results(iRep, iModel).ThetaMLE);
         results(iRep, iModel).LL1 = LLfunc( results(iRep, iModel).solMLE.eObs, results(1, iModel).obs, par);
