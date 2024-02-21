@@ -120,12 +120,12 @@ To run the code on a user-supplied dataset:
 - Run the script `fitUserData.m`.
 
 This will generate profile likelihood graphs for the target parameters using both the basic and structured methods. The numerical results will be saved in a file '/results/results_userdata.mat'. This file contains a structure called results with the following fields:
-- solMLE - model solution output at the MLE parameter values.
-- LLMLE - log likelihood evaluated at the MLE.
-- ThetaMLE - vector of parameter values at the MLE.
-- ThetaProfile - array of parameter values profiled, with each row of ThetaProfile containing the range of values in the profiling interval for one of the target parameters.
-- logLik - corresponding array of log likelihood values at the profiling points in ThetaProfile.
-- logLikNorm - normalised version of logLik (i.e. difference between logLik and LLMLE).
-- CIs - (1-Alpha)% confidence intervals for each profiled parameter
-- all of the above with the variabled name suffixed with *Structured* for corresponding results from the structured method (NB for the fields containing the profiling results, only *outer* parameters are profiled, so the arrays will have k fewer rows than for the basic method, where k is the number of inner parameters). 
+- results.solMLE - model solution output at the MLE parameter values.
+- results.LLMLE - log likelihood evaluated at the MLE.
+- results.ThetaMLE - vector of parameter values at the MLE.
+- results.ThetaProfile - array of parameter values profiled, with each row of ThetaProfile containing the range of values in the profiling interval for one of the target parameters.
+- results.logLik - corresponding array of log likelihood values at the profiling points in ThetaProfile.
+- results.logLikNorm - normalised version of logLik (i.e. difference between logLik and LLMLE).
+- results.CIs - (1-Alpha)% confidence intervals for each profiled parameter
+- all of the above with the field name suffixed with *Structured* for corresponding results from the structured method (NB for the fields containing the profiling results, only *outer* parameters are profiled, so the arrays will have k fewer rows than for the basic method, where k is the number of inner parameters). 
   
