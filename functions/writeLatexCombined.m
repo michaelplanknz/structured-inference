@@ -1,6 +1,7 @@
 function writeLatexCombined(mdl, outTab, results, modelLbl, fName)
 
 nModels = length(mdl);
+nReps = size(results, 1);
 
 qt = [0.25; 0.5; 0.75];
 
@@ -37,13 +38,21 @@ for iModel = 1:nModels
     % Calculate the proportion of realisations for which the CI contained true value of each parameter (under basic and structured methods)
     pCov = mean(cat(2, results(:, iModel).covFlag), 2);
     pCovStructured = mean(cat(2, results(:, iModel).covFlagStructured), 2);
+    jParProfile = 1;
     for iPar = 1:nPars
-        jParProfile = 1;
-        fprintf(fid, '& $%s$ & %.0f\\%%', mdl(iModel).parLbl(iPar), 100*pCov(iPar));
+        if nReps <= 100
+            fprintf(fid, '& $%s$ & %.0f\\%%', mdl(iModel).parLbl(iPar), 100*pCov(iPar));
+        else
+            fprintf(fid, '& $%s$ & %.1f\\%%', mdl(iModel).parLbl(iPar), 100*pCov(iPar));
+        end
         if ismember(iPar, mdl(iModel).parsToOptimise)
             fprintf(fid, ' & - \\\\ \n');
         else
-            fprintf(fid, ' & %.0f\\%%  \\\\ \n', 100*pCovStructured(jParProfile) );
+            if nReps <= 100
+                fprintf(fid, ' & %.0f\\%%  \\\\ \n', 100*pCovStructured(jParProfile) );
+            else
+                fprintf(fid, ' & %.1f\\%%  \\\\ \n', 100*pCovStructured(jParProfile) );
+            end
             jParProfile = jParProfile+1;
         end
     end
