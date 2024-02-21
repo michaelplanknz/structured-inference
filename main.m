@@ -102,7 +102,7 @@ for iModel = 1:nModels
         logLikStructuredNorm = logLikStructured - LLMLEStructured;      % calculate normalised log-likelihood
 
         % Calculate CIs from profile results
-        CIsStructured = findCIs(ThetaProfileStructured, logLikNormStructured, Alpha);
+        CIsStructured = findCIs(ThetaProfileStructured, logLikStructuredNorm, Alpha);
         
         % Store results from this realisation in a structure array
         results(iRep, iModel).ThetaTrue = mdl.ThetaTrue;
