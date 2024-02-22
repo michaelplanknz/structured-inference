@@ -2,6 +2,11 @@ clear
 close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TOP-LEVEL SCRIPT TO APPLY THE BASIC AND STRUCTURED METHODS TO A USER-SUPPLIEED DATASET
+% Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Global settings
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -54,11 +59,12 @@ logLikNorm = logLik - LLMLE;
 % Find CIs
 CIs = findCIs(ThetaProfile, logLikNorm, thresholdValue);
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Find MLE and profile each (non-optimised) parameter with structured inference method
 % NB variables with 'Structured" suffix relate to output from the structured inference method as opposed to the basic method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 % MLE
 [ThetaMLEStructured, parMLEStructured, solMLEStructured, LLMLEStructured, countMLEStructured] = doMLEStructured(mdl, obs);

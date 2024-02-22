@@ -28,7 +28,6 @@ fNameTex = "table";
 nReps = 500;    % number of independently generated data sets to analyse for each model
 nMesh = 41;     % number of points in parameter mesh for profiles
 Alpha = 0.05;   % significance level for calculating CIs
-
 varyParamsFlag = 0;    % If set to 0, each rep will regenerate data using the *same* model parameters; if set                                                   to 1, each rep will randomly draw target parameter values and then regenerate data
 
 modelLbl = ["LV", "SEIR", "RAD_PDE"]';                                 % string array of labels for models - can include "LV", "SEIR", "RAD_PDE"
