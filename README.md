@@ -1,9 +1,9 @@
 # Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences
 
-This repository provides code to accompany the article "Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences".
+This repository provides code to accompany the article "Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences" by Michael J. Plank and Matthew J. Simpson.
 
-A preprint of the article is available at ...
-Results in this version were generated using the commit tagged ...
+A preprint of the article is available at https://arxiv.org/abs/2403.01678 
+Results in this version were generated using the commit tagged `v1.0`.
 
 
  # How to use this repository
