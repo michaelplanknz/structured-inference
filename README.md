@@ -5,6 +5,8 @@ This repository provides code to accompany the article "Structured methods for p
 A preprint of the article is available at https://arxiv.org/abs/2403.01678. 
 Results in this version were generated using the commit tagged `v1.0`.
 
+All analysis was done in Matlab R2022b.
+
 
  # How to use this repository
 
