@@ -22,18 +22,24 @@ ThetaProfileStructured = results.ThetaProfileStructured;
 logLikStructuredNorm = results.logLikStructuredNorm;
 
 
+lightness = 0.4;       % lightness for data points (setting to 0 will use default colors, setting to 1 will fully lighten them to white)
+
+
 h = figure(2*(iCall-1)+1);
 h.Position = [        98         524        1043         420];
 subplot(1, 2, 1)
 if trueSolFlag
     pl3 = plot(sol.xPlot, obs, '.' );
     pl3(1).DisplayName = 'data';
+    for ii = 1:length(pl3)
+        pl3(ii).Color = pl3(ii).Color*(1-lightness) + lightness;      % increase lightness level on data points to assist readability
+    end
     hold on
     set(gca, 'ColorOrderIndex', 1)
-    pl1 = plot(sol.xPlot, sol.eObs, '-');
+    pl1 = plot(sol.xPlot, sol.eObs, '-', 'LineWidth', 2);
     pl1(1).DisplayName = 'actual';
     set(gca, 'ColorOrderIndex', 1)
-    pl2 = plot(solMLE.xPlot, solMLE.eObs, '--');
+    pl2 = plot(solMLE.xPlot, solMLE.eObs, '--', 'LineWidth', 2);
     pl2(1).DisplayName = 'MLE';
     for ii = 2:length(pl1)
         pl1(ii).HandleVisibility = 'off';
@@ -43,9 +49,12 @@ if trueSolFlag
 else
     pl3 = plot(solMLE.xPlot, obs, '.' );
     pl3(1).DisplayName = 'data';
+    for ii = 1:length(pl3)
+        pl3(ii).Color = pl3(ii).Color*(1-lightness) + lightness;      % increase lightness level on data points to assist readability
+    end
     hold on
     set(gca, 'ColorOrderIndex', 1)
-    pl2 = plot(solMLE.xPlot, solMLE.eObs, '--');
+    pl2 = plot(solMLE.xPlot, solMLE.eObs, '--', 'LineWidth', 2);
     pl2(1).DisplayName = 'MLE';
     for ii = 2:length(pl2)
         pl2(ii).HandleVisibility = 'off';
@@ -55,25 +64,29 @@ end
 legend;
 xlabel(mdl.xLbl)
 ylabel(mdl.yLbl)
-%ylim([0 inf])
 title('(a)')
 subplot(1, 2, 2)
 if trueSolFlag
     pl3 = plot(sol.xPlot, obs, '.' );
+    for ii = 1:length(pl3)
+        pl3(ii).Color = pl3(ii).Color*(1-lightness) + lightness;      % increase lightness level on data points to assist readability
+    end
     hold on
     set(gca, 'ColorOrderIndex', 1)
-    pl1 = plot(sol.xPlot, sol.eObs, '-');
+    pl1 = plot(sol.xPlot, sol.eObs, '-', 'LineWidth', 2);
     set(gca, 'ColorOrderIndex', 1)
-    pl2 = plot(solMLEStructured.xPlot, solMLEStructured.eObs, '--');
+    pl2 = plot(solMLEStructured.xPlot, solMLEStructured.eObs, '--', 'LineWidth', 2);
 else
     pl3 = plot(solMLE.xPlot, obs, '.' );
+    for ii = 1:length(pl3)
+        pl3(ii).Color = pl3(ii).Color*(1-lightness) + lightness;      % increase lightness level on data points to assist readability
+    end
     hold on
     set(gca, 'ColorOrderIndex', 1)
-    pl2 = plot(solMLEStructured.xPlot, solMLEStructured.eObs, '--');
+    pl2 = plot(solMLEStructured.xPlot, solMLEStructured.eObs, '--', 'LineWidth', 2);
 end
 xlabel(mdl.xLbl)
 ylabel(mdl.yLbl)
-%ylim([0 inf])
 title('(b)')
 drawnow
 pause(0.1)
