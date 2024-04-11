@@ -104,10 +104,13 @@ The required fields of sol are:
 ## transformSolution
 
 **Inputs:** Phi - the value of the inner parameter(s) at which the solution is required.
-            sol - a solution structure  (as returned by `solveModelLABEL`) containing a field sol.eObs for the array of expected values of the observed data, under the reference value for the inner parameter(s).
+            sol - a solution structure  (as returned by `solveModelLABEL`) containing the model solution under the reference value for the inner parameter(s).
 
-**Outputs:** eObs - a corresponding array of the same size as the input array sol.eObs of expected values under the specified value (Phi) of inner parameter(s).
+**Outputs:** eObs - a corresponding array of the same size as the input array sol.eObs of expected values for the observed data under the specified value (Phi) of inner parameter(s).
 
+See `/models/transformSolutionMultiply.m` for an example where the inner parameter simply multiplies the model solution (as in case studies 1 and 2 in the article).
+
+See `/models/transformSolution_OgataBanks.m` for an example where the inner parameter effectively rescales the time variable in a PDE (as in case study 3 in the article). In this example, the solution for the expected value of the observed variable s(x, t) is obtained from the reference solution uref via s(x, t) = (R-1)*uref(x, t/R) (where R>1).
  
 # User-supplied data
 
