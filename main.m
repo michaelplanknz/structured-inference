@@ -150,8 +150,6 @@ for iModel = 1:nModels
 end
 
 
-
-
 %%
 % Write outputs
 
