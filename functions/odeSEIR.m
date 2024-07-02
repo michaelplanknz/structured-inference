@@ -24,6 +24,7 @@ dC2dt = par.obsRate * C1;
 dydt = [dSdt; dEdt; dIdt; dR1dt; dC1dt; dC2dt];
 
 % To prevent variables from becoming negative:
+% (note an altenrative way to do this that avoids artificially introducing a steep gradient in the solution when outside the bioloigcal region would be to adjust error tolerances so that negative solutions never occur in the parameter range of interest)
 negFlag = y < 0;
 dydt(negFlag) = -big*y(negFlag);
 
