@@ -5,7 +5,7 @@ This repository provides code to accompany the article "Structured methods for p
 A preprint of the article is available [here](https://arxiv.org/abs/2403.01678). 
 Results in this version were generated using the commit tagged `v1.0`.
 
-The published article is: [Plank, M.J., Simpson, M.J. (2024) Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences. R. Soc. Open Sci. 11: 240733](https://doi.org/10.1098/rsos.240733)
+The published article is: Plank, M.J., Simpson, M.J. (2024) Structured methods for parameter inference and uncertainty quantification for mechanistic models in the life sciences. R. Soc. Open Sci. 11: 240733. [doi.org/10.1098/rsos.240733](https://doi.org/10.1098/rsos.240733).
 
 The version of this repository used for the final article is archived in this [Zenodo repository](https://doi.org/10.5281/zenodo.12686724).
 
